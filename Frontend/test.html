@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="sv">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Toalettkartan Malmö</title>
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+    <!-- LEaflet Plugins-->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-minimap/dist/Control.MiniMap.min.css" />
+
+    <!-- lokal CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div id="sidebar">
+        <div id="sidebarButtons">
+            <table>
+                <tr>
+                    <td>GREATEST SHITS</td>
+                    <td>SUNKY</td>
+                    <td>STANDARD</td>
+                </tr>
+            </table>
+        </div>
+
+        <h2>🚻 Toaletter i Malmö</h2>
+
+        <div class="filter-section">
+            <label for="address">Hitta din toalett:</label>
+            <input type="text" id="address" placeholder="Skriv in..." style="width: 100%;">
+            <button id="search-btn">Sök</button>
+
+        
+            <div id="suggestions"></div>
+        </div>
+
+        <h3>Resultat</h3>
+        <div id="list"></div>
+    </div>
+
+    <div id="map"></div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <!-- Plugins -->
+    <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
+    <script src="https://unpkg.com/leaflet-minimap/dist/Control.MiniMap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet.heat/dist/leaflet-heat.js"></script>
+
+    <!-- lokal JS -->
+    <script src="script.js"></script>
+
+</body>
+</html>
