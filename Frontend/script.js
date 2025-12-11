@@ -28,7 +28,16 @@ const toilets = [
         lat: 55.589,
         lng: 13.0155,
         category: "standard"
+    },
+    {
+        name: "Casa Björnheimer",
+        lat: 55.602,
+        lng: 13.0135,
+        category: "EPIC"
     }
+        
+
+    
 ];
 
 // Rita ut markers från listan
