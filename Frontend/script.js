@@ -120,5 +120,18 @@ async function helloWorld() {
 
 }
 
-document.querySelector("#testButton").addEventListener("click", helloWorld);
+async function getAllToilets(){
+    const options = {
+        method: "GET",
+        headers: {
+            "Accept": "application/json"
+        }
+    };
+    //const response = await fetch('./toilets.json', options);
+    const res = await fetch("http://localhost:7070", options);
+    const data = await res.json();
+    console.log(data);
+}
+
+document.querySelector("#testButton").addEventListener("click", getAllToilets);
 
