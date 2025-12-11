@@ -106,3 +106,19 @@ function selectToilet(t) {
         .bindPopup(t.name)
         .openPopup();
 }
+
+async function helloWorld() {
+    const options = {
+        method: "POST",
+        headers: {
+            "Content-Type": "text/plain"
+        },
+        body: "Hej backend // frontend"
+    }
+
+    await fetch("http://localhost:7070/", options);
+
+}
+
+document.querySelector("#testButton").addEventListener("click", helloWorld);
+
