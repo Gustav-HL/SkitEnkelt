@@ -10,40 +10,42 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 
 // TOALETT-DATABAS, ska kompletteras med getmetoder från vårt API
 
-const toilets = [
-    {
-        name: "Nobeltorget",
-        lat: 55.5916569774,
-        lng: 13.0202647274,
-        category: "lyxig"
-    },
-    {
-        name: "Parktoalett",
-        lat: 55.583,
-        lng: 13.0230,
-        category: "sunk"
-    },
-    {
-        name: "Sofielund",
-        lat: 55.589,
-        lng: 13.0155,
-        category: "standard"
-    },
-    {
-        name: "Casa Björnheimer",
-        lat: 55.602,
-        lng: 13.0135,
-        category: "EPIC"
-    }
-        
-
-    
-];
-
-// Rita ut markers från listan
-toilets.forEach(t => {
-    L.marker([t.lat, t.lng]).addTo(map).bindPopup(t.name);
-});
+// const toilets = [
+//     {
+//         name: "Nobeltorget",
+//         lat: 55.5916569774,
+//         lng: 13.0202647274,
+//         category: "lyxig"
+//     },
+//     {
+//         name: "Parktoalett",
+//         lat: 55.583,
+//         lng: 13.0230,
+//         category: "sunk"
+//     },
+//     {
+//         name: "Sofielund",
+//         lat: 55.589,
+//         lng: 13.0155,
+//         category: "standard"
+//     },
+//     {
+//         name: "Casa Björnheimer",
+//         lat: 55.602,
+//         lng: 13.0135,
+//         category: "EPIC"
+//     }
+//
+//
+//
+// ];
+//
+//
+//
+// // Rita ut markers från listan
+// toilets.forEach(t => {
+//     L.marker([t.lat, t.lng]).addTo(map).bindPopup(t.name);
+// });
 
 
 // AUTOCOMPLETE
@@ -107,6 +109,11 @@ function selectToilet(t) {
         .openPopup();
 }
 
+//DISPLAY ALL TOILETS ON SIDEBAR
+function showAllToilets(){
+    document.getElementById("#list")
+}
+
 async function helloWorld() {
     const options = {
         method: "POST",
@@ -131,7 +138,15 @@ async function getAllToilets(){
     const res = await fetch("http://localhost:7070", options);
     const data = await res.json();
     console.log(data);
+    data.forEach(t => {
+        L.marker([t.lat, t.lng]).addTo(map).bindPopup(t.name);
+        const li = document.createElement("li");
+        li.textContent = `${t.name}, ${t.lat}, ${t.lng}`;
+        document.getElementById("list").append(li);
+    });
 }
+
+
 
 document.querySelector("#testButton").addEventListener("click", getAllToilets);
 
