@@ -1,6 +1,4 @@
-import Resources.FeatureCollection;
-import Resources.Properties;
-import Resources.Toilet;
+import Resources.*;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
@@ -13,14 +11,19 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.lang.reflect.Type;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class App {
     public static void main(String[] args) throws FileNotFoundException {
         Gson gson = new Gson();
         JsonReader reader = new JsonReader(new FileReader("./toilets.json"));
-        //Properties properties = gson.fromJson(reader, Properties.class);
         FeatureCollection featureCollection = gson.fromJson(reader, FeatureCollection.class);
+        //Toilet toilet = gson.fromJson(reader, Toilet.class);
+
+
+
 
         App runner = new App();
         Javalin app = Javalin.create(config -> {
@@ -31,8 +34,19 @@ public class App {
                 });
             });
         })
-                .get("/", ctx ->
-                        ctx.json(featureCollection))
+                .get("/", ctx -> {
+                    List<Toilet> toilets = featureCollection.features.stream()
+                            .map(f -> new Toilet(
+                                    f.properties.id,
+                                    f.properties.name,
+                                    f.geometry.coordinates.get(0),
+                                    f.geometry.coordinates.get(1),
+                                    f.properties.change_table_child,
+                                    f.properties.fee
+                            ))
+                            .collect(Collectors.toList());
+                    ctx.json(toilets);
+                })
                 .post("/", ctx -> runner.updateMap(ctx))
                 .start(7070);
     }
