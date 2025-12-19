@@ -6,13 +6,10 @@ import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 import java.util.stream.Collectors;
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 import Resources.*;
-
-import javax.management.Query;
 
 public class ToiletHandler {
     private List<Toilet> allToilets;
@@ -49,7 +46,6 @@ public class ToiletHandler {
     }
 
     public List<Toilet> filterToilets(Context ctx, Map<String, List<String>> filters, List<Toilet> toilets) {
-
         String table = ctx.queryParam("change_table_child");
         if(table != null) {
             toilets.removeIf(t -> !String.valueOf(t.getChange_table_child()).equals(table));
@@ -60,6 +56,10 @@ public class ToiletHandler {
     }
 
     public void addReview(Context ctx){
+
+    }
+
+    public void proximitySearch(Context ctx) {
 
     }
 }

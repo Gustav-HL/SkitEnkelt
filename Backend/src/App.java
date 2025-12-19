@@ -12,7 +12,7 @@ public class App {
                     config.jsonMapper(new JavalinGson());
             config.bundledPlugins.enableCors(cors -> {
                 cors.addRule(it -> {
-                    it.allowHost("http://localhost:63342");
+                    it.anyHost();
                 });
             });
         })
