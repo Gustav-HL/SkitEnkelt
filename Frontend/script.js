@@ -114,11 +114,13 @@ function showAllToilets(){
     document.getElementById("#list")
 }
 
-async function helloWorld() {
+async function rateAToilet() {
+
+
     const options = {
         method: "POST",
         headers: {
-            "Content-Type": "text/plain"
+            "Content-Type": "application/json"
         },
         body: "Hej backend // frontend"
     }
@@ -134,15 +136,18 @@ async function getAllToilets(){
             "Accept": "application/json"
         }
     };
-    //const response = await fetch('./toilets.json', options);
     const res = await fetch("http://localhost:7070", options);
     const data = await res.json();
     console.log(data);
     data.forEach(t => {
         L.marker([t.lat, t.lng]).addTo(map).bindPopup(t.name);
         const li = document.createElement("li");
+        const pickBtn = document.createElement("button");
+        document.querySelector("#toa-item")
         li.textContent = `${t.name}, ${t.lat}, ${t.lng}`;
-        document.getElementById("list").append(li);
+        pickBtn.textContent = 'Review'
+        li.append(pickBtn)
+        document.querySelector("#toa-list").append(li);
     });
 }
 

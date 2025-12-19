@@ -1,18 +1,12 @@
 import Resources.*;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import io.javalin.Javalin;
 import io.javalin.json.JavalinGson;
-import io.javalin.plugin.bundled.CorsPluginConfig;
 import io.javalin.http.Context;
-
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.lang.reflect.Type;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 public class App {
@@ -20,10 +14,6 @@ public class App {
         Gson gson = new Gson();
         JsonReader reader = new JsonReader(new FileReader("./toilets.json"));
         FeatureCollection featureCollection = gson.fromJson(reader, FeatureCollection.class);
-        //Toilet toilet = gson.fromJson(reader, Toilet.class);
-
-
-
 
         App runner = new App();
         Javalin app = Javalin.create(config -> {

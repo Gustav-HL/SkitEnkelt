@@ -10,15 +10,17 @@ body {
 #sidebar {
     width: 400px;
     background-color: rgb(138, 201, 180);
-    background-image: url("shitter.jpg");
-     background-repeat: no-repeat;     /* upprepas inte */
+    /*background-image: url("shitter.jpg");*/
+    background-repeat: no-repeat;     /* upprepas inte */
     background-position: bottom;      /* placeras i botten */
-    background-size: contain; 
+    background-size: contain;
     border-right: 1px solid #ddd;
     padding: 15px;
     z-index: 10;
     border-right: solid grey 5px;
 }
+
+
 #sidebarButtons table {
     width: 100%;
     border-collapse: separate;
