@@ -32,7 +32,14 @@ public class App {
                                     f.geometry.coordinates.get(0),
                                     f.geometry.coordinates.get(1),
                                     f.properties.change_table_child,
-                                    f.properties.fee
+                                    f.properties.fee,
+                                    f.properties.report_phone,
+                                    f.properties.report_url,
+                                    f.properties.open_hours,
+                                    f.properties.open_season,
+                                    f.properties.wc,
+                                    f.properties.accessability
+                                    //f.reviews.getReviews()
                             ))
                             .collect(Collectors.toList());
                     ctx.json(toilets);

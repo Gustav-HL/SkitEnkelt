@@ -5,4 +5,5 @@ public class Feature {
     public Geometry geometry;
     public Toilet toilet;
     public Properties properties;
+    public Reviews reviews;
 }

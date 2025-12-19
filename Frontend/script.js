@@ -145,7 +145,7 @@ async function getAllToilets(){
         const pickBtn = document.createElement("button");
         document.querySelector("#toa-item")
         li.textContent = `${t.name}, ${t.lat}, ${t.lng}`;
-        pickBtn.textContent = 'Review'
+        pickBtn.textContent = 'Rate'
         li.append(pickBtn)
         document.querySelector("#toa-list").append(li);
     });
