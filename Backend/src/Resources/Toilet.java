@@ -15,12 +15,12 @@ public class Toilet {
     private String openingSeason;
     private int nbrOfToilets;
     private String accessible;
-    //private List<Review> reviews;
+    private List<Review> reviews;
 
 
 
     public Toilet(int id, String name, double lng, double lat, int change_table_child, String fee, String report_phoneNbr,
-                  String report_url, String openingHrs, String openingSeason, int nbrOfToilets, String accessible) {
+                  String report_url, String openingHrs, String openingSeason, int nbrOfToilets, String accessible, List<Review> reviews) {
         this.id = id;
         this.name = name;
         this.lng = lng;
@@ -33,7 +33,7 @@ public class Toilet {
         this.openingSeason = openingSeason;
         this.nbrOfToilets = nbrOfToilets;
         this.accessible = accessible;
-        //this.reviews = reviews;
+        this.reviews = reviews;
     }
 
     public void setId(int id) {
@@ -132,11 +132,11 @@ public class Toilet {
         this.accessible = accessible;
     }
 
-//    public List<Review> getReviews() {
-//        return reviews;
-//    }
-//
-//    public void setReviews(List<Review> reviews) {
-//        this.reviews = reviews;
-//    }
+    public List<Review> getReviews() {
+        return reviews;
+    }
+
+    public void setReviews(List<Review> reviews) {
+        this.reviews = reviews;
+    }
 }

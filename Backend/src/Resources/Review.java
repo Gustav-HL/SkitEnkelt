@@ -4,22 +4,32 @@ import java.util.Date;
 import java.util.List;
 
 public class Review {
+    private int id;
     private String author;
-    private Date date;
+    private String date;
+    private int toiletId;
     private String toiletName;
-    private List<Double> coordinates;
-    private int rating;
+    private double rating;
     private String description;
     private String photo;
 
-    public Review(String author, Date date, String toalettNamn, List<Double> coordinates, int rating, String description, String photo){
+    public Review(int id, String author, String date, int toiletId, String toalettNamn, double rating, String description, String photo){
+        this.id = id;
         this.author = author;
         this.date = date;
+        this.toiletId = toiletId;
         this.toiletName = toalettNamn;
-        this.coordinates = coordinates;
         this.rating = rating;
         this.description = description;
         this.photo = photo;
+    }
+
+    public int getId(){
+        return id;
+    }
+
+    public void setId(int id){
+        this.id = id;
     }
 
     public String getAuthor() {
@@ -30,12 +40,19 @@ public class Review {
         this.author = author;
     }
 
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(String date) {
         this.date = date;
+    }
+    public int getToiletId(){
+        return toiletId;
+    }
+
+    public void setToiletId(int toiletId){
+        this.toiletId = toiletId;
     }
 
     public String getToiletName() {
@@ -46,19 +63,11 @@ public class Review {
         this.toiletName = toaNamn;
     }
 
-    public List<Double> getCoordinates() {
-        return coordinates;
-    }
-
-    public void setCoordinates(List<Double> coordinates) {
-        this.coordinates = coordinates;
-    }
-
-    public int getRating() {
+    public double getRating() {
         return rating;
     }
 
-    public void setRating(int rating) {
+    public void setRating(double rating) {
         this.rating = rating;
     }
 
