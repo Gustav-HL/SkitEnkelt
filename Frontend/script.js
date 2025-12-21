@@ -136,7 +136,7 @@ async function getAllToilets(){
             "Accept": "application/json"
         }
     };
-    const res = await fetch("http://localhost:7070", options);
+    const res = await fetch("http://localhost:7070/toilets", options);
     const data = await res.json();
     console.log(data);
     data.forEach(t => {
