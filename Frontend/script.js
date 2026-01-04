@@ -1,5 +1,5 @@
 // Event Listner to load script first
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", async function () {
     // Load and display map
     var map = L.map('map').setView([55.605, 13.003], 13);
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -8,43 +8,18 @@ document.addEventListener("DOMContentLoaded", function () {
     }).addTo(map);
 
     // Temp data
-    const toilets = [
-        { 
-            name: "Nobeltorget", 
-            lat: 55.5916569774, 
-            lng: 13.0202647274, 
-            category: "lyxig", 
-            score: 85, 
-            dankness: 70 },
-        { 
-            name: "Parktoalett", 
-            lat: 55.583, 
-            lng: 13.0230, 
-            category: "sunk", 
-            score: 0, 
-            dankness: 90 },
-        { 
-            name: "Sofielund", 
-            lat: 55.589, 
-            lng: 13.0155, 
-            category: "standard", 
-            score: 50, 
-            dankness: 55 },
-        {
-            name: "Havet", 
-            lat: 55.389, 
-            lng: 13.0255, 
-            category: "standard", 
-            score: 50, 
-            dankness: 55 },
-        { 
-            name: "Casa Björnheimer", 
-            lat: 55.602, 
-            lng: 13.0135, 
-            category: "EPIC", 
-            score: 100, 
-            dankness: 100 }
-    ];
+    let toilets = []; // This will now hold the data from your Java Backend
+
+    // 2. Fetch Data from Backend
+    try {
+        const response = await fetch("http://localhost:7071/toilets");
+        if (!response.ok) throw new Error("Backend not responding");
+        toilets = await response.json();
+    } catch (error) {
+        console.error("Fetch error:", error);
+        // Optional: show a message on the UI that the server is down
+        return;
+    }
     // Dict Stores marker by name 
     const markerDict = {};
 
