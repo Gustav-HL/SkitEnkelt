@@ -6,18 +6,53 @@ document.addEventListener("DOMContentLoaded", async function () {
         maxZoom: 19,
         attribution: '&copy; OpenStreetMap'
     }).addTo(map);
+    // TOALETT-DATABAS, ska kompletteras med getmetoder från vårt API
 
-    // Temp data
-    let toilets = []; // This will now hold the data from your Java Backend
+    // const toilets = [
+    //     {
+    //         name: "Nobeltorget",
+    //         lat: 55.5916569774,
+    //         lng: 13.0202647274,
+    //         category: "lyxig"
+    //     },
+    //     {
+    //         name: "Parktoalett",
+    //         lat: 55.583,
+    //         lng: 13.0230,
+    //         category: "sunk"
+    //     },
+    //     {
+    //         name: "Sofielund",
+    //         lat: 55.589,
+    //         lng: 13.0155,
+    //         category: "standard"
+    //     },
+    //     {
+    //         name: "Casa Björnheimer",
+    //         lat: 55.602,
+    //         lng: 13.0135,
+    //         category: "EPIC"
+    //     }
+    //
+    //
+    //
+    // ];
+    //
+    //
+    //
+    // // Rita ut markers från listan
+    // toilets.forEach(t => {
+    //     L.marker([t.lat, t.lng]).addTo(map).bindPopup(t.name);
+    // });
+    let toilets = [];
 
-    // 2. Fetch Data from Backend
+    // Fetch Data from backend
     try {
         const response = await fetch("http://localhost:7071/toilets");
         if (!response.ok) throw new Error("Backend not responding");
         toilets = await response.json();
     } catch (error) {
         console.error("Fetch error:", error);
-        // Optional: show a message on the UI that the server is down
         return;
     }
     // Dict Stores marker by name 
