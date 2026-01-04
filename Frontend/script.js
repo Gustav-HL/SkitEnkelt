@@ -44,6 +44,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     // toilets.forEach(t => {
     //     L.marker([t.lat, t.lng]).addTo(map).bindPopup(t.name);
     // });
+    
     let toilets = [];
 
     // Fetch Data from backend
