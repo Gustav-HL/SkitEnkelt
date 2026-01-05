@@ -51,10 +51,13 @@
     <div id="map"></div> -->
 
     <div id="sidebar">
-        <div class="tabs">
-            <button id="sortName">Standard</button>
-            <button id="sortScore">Poäng</button>
-            <button id="sortDankness">Sunk</button>
+        <div class="sort-tab-group">
+            <button id="sortName" class="tab-buttons active">Standard</button>
+            <button id="sortScore" class="tab-buttons">Poäng</button>
+            <button id="sortDankness" class="tab-buttons">Sunk</button>
+        </div>
+        <div class="search-section">
+            <input type="text" id="toiletSearch" placeholder="Sök efter toalett...">
         </div>
         <ul id="toa-list"></ul>
     </div>
