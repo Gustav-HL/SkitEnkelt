@@ -1,3 +1,27 @@
+:root {
+    /* Ändra färger här */
+    /* primära Highlight färgen */
+    --primary-brown: #795548;    
+    /*  för text highlightning*/  
+    --primary-dark: #5d4037;    
+    /*  för hovers och boarders */  
+    --primary-light: #d7ccc8;      
+    
+    /* Backgrounds */
+    /* Sidebar  bakgrund */
+    --bg-sidebar: #f2ede9;  
+    /* Kort bakgrund för listan */       
+    --bg-card: #ffffff;            
+    --bg-card-active: #fdfaf7;    
+    --bg-tab-inactive: #f0f0f0;
+    
+    /* Greys and Borders */
+    --border-light: #ddd;
+    --text-main: #333333;
+    --text-black: #000000;
+}
+
+
 body {
     margin: 0;
     font-family: Arial, sans-serif;
@@ -9,13 +33,14 @@ body {
 /* Sidopanel */
 #sidebar {
     width: 400px;
-    background-color: rgb(138, 201, 180);
+    /* background-color: rgb(138, 201, 180); */
+    background-color: var(--bg-sidebar);
     /*background-image: url("shitter.jpg");*/
-    background-repeat: no-repeat;     /* upprepas inte */
-    background-position: bottom;      /* placeras i botten */
+    background-repeat: no-repeat; 
+    background-position: bottom;  
     background-size: contain;
     border-right: 1px solid #ddd;
-    padding: 15px;
+    /* padding: 15px; */
     z-index: 10;
     border-right: solid grey 5px;
 }
@@ -80,4 +105,164 @@ body {
 /*tar bort routeplanner*/
 .leaflet-routing-container {
     display: none !important;
+}
+
+
+.sort-tab-group {
+    display: flex;
+    width: 100%;
+}
+
+.tab-buttons {
+    flex: 1;
+    padding: 10px 5px;
+    border: none;
+    background-color: var(--bg-tab-inactive);
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background 0.2s;
+    border-right: 1px solid var(--border-light);
+}
+
+/* The active pressed button with the brown underscore */
+.tab-buttons.active {
+    color: var(--primary-dark);
+    font-weight: bold;
+    background-color: var(--bg-card-active); 
+    
+    border-bottom: 3px solid var(--primary-brown); 
+}
+
+.tab-buttons:hover:not(.active) {
+    background-color: var(--primary-light);
+    border-bottom: 3px solid #d7ccc8;
+}
+
+.toilet_card {
+    list-style: none;
+    cursor: pointer;
+    padding: 15px;
+    margin-bottom: 10px;
+    background-color: var(--bg-card);
+    border-radius: 8px;  
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05); 
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+}
+
+.toilet_card strong {
+    color: var(--text-black);
+    display: block;
+    margin-bottom: 4px;
+    transition: color 0.2s ease;
+}
+
+.toilet_card small {
+    color: #333333; 
+    transition: color 0.2s ease;
+}
+
+/* Hover and Selected State */
+.toilet_card:hover, 
+.toilet_card.selected {
+    background-color: #fafafa;
+    border-color: var(--primary-brown); 
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.toilet_card:hover strong, 
+.toilet_card.selected strong,
+.toilet_card:hover small,
+.toilet_card.selected small {
+    color: var(--primary-brown); 
+}
+
+.toilet-popup {
+    font-family: sans-serif;
+    line-height: 1.6;
+    color: #4d4949;
+}
+
+.popup-title {
+    display: block;
+    font-size: 1.2rem;
+    color: #000000; 
+    border-bottom: 1px solid #d7ccc8;
+    margin-bottom: 8px;
+    padding-bottom: 4px;
+}
+
+.popup-info span {
+    display: block;
+    font-size: 0.9rem;
+}
+
+
+/* Leaflet Style Overrides */
+
+.leaflet-popup-content-wrapper {
+    background-color: var(--bg-card-active); 
+    border-radius: 8px;
+    border: 1px solid var(--primary-brown);
+}
+
+.leaflet-popup-tip {
+    background: var(--primary-brown);
+}
+
+.leaflet-popup-close-button {
+    color: var(--primary-brown) !important;
+    padding: 5px !important;
+}
+
+
+.marker-box {
+    display: flex;
+    justify-content: center;
+}
+
+.marker-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 50% 50% 50% 0;
+    background: var(--primary-brown); 
+    position: absolute;
+    transform: rotate(-45deg);
+    left: 50%;
+    top: 50%;
+    margin: -15px 0 0 -15px;
+    border: 2px solid #ffffff;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+}
+
+.marker-icon::after {
+    content: '';
+    width: 12px;
+    height: 12px;
+    margin: 9px 0 0 9px;
+    background: #fff;
+    position: absolute;
+    border-radius: 50%;
+}
+
+.search-section {
+    padding: 10px;
+    background-color: var(--bg-sidebar);
+}
+
+#toiletSearch {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--primary-light);
+    border-radius: 8px;
+    box-sizing: border-box;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+#toiletSearch:focus {
+    border-color: var(--primary-brown);
+    box-shadow: 0 0 5px rgba(121, 85, 72, 0.2);
 }
