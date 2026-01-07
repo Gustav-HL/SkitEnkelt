@@ -15,13 +15,11 @@ import com.google.gson.stream.JsonReader;
 import Resources.*;
 
 public class ToiletHandler {
-    private List<Toilet> allToilets;
     private FeatureCollection featureCollection;
     private String toiletsUrl = "https://ckan-malmo.dataplatform.se/dataset/82b9290d-bd82-4611-ae28-161f95c71339/resource/81b70be0-1860-467f-bfcc-5bf70d094dd0/download/offentliga_toaletter.json";
 
-    public ToiletHandler() throws FileNotFoundException {
+    public ToiletHandler() {
         Gson gson = new Gson();
-        this.allToilets = new ArrayList<>();
         JsonReader reader = new JsonReader(new StringReader(callToiletsAPI()));
         this.featureCollection = gson.fromJson(reader, FeatureCollection.class);
     }
@@ -56,6 +54,7 @@ public class ToiletHandler {
 
                 )
                 .collect(Collectors.toList());
+        //queryList ämnar effektivisera till hur filter hanteras, görs för nuvarande endast manuellt
         Map<String, List<String>> queryList = ctx.queryParamMap();
         if(!queryList.equals("{}")){
             toilets = filterToilets(ctx, queryList, toilets);
@@ -63,6 +62,7 @@ public class ToiletHandler {
         ctx.json(toilets);
     }
 
+    //Inparameter filters gör i nuvarande inget, berör om filter-hanteringen ska effektivseras eller inte
     public List<Toilet> filterToilets(Context ctx, Map<String, List<String>> filters, List<Toilet> toilets) {
         String tableChild = ctx.queryParam("change_table_child");
         String feeExist = ctx.queryParam("fee");
@@ -70,7 +70,7 @@ public class ToiletHandler {
 
 
 
-        //Current filters: tableChild, fee, wcs
+        //Nuvarande existerande filerhanteringar: tableChild, fee, wcs
         if (tableChild != null) {
             toilets.removeIf(t -> t.getChange_table_child() < 1);
         }
