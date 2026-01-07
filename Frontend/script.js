@@ -8,7 +8,6 @@ document.addEventListener("DOMContentLoaded", async function () {
     }).addTo(map);
     
     // TOALETT-DATABAS, ska kompletteras med getmetoder från vårt API
-
     // const toilets = [
     //         {
     //             name: "Nobeltorget",
@@ -88,13 +87,12 @@ document.addEventListener("DOMContentLoaded", async function () {
     // }
 
     // await fetch("http://localhost:7070/", options);
-
     // }
 
     // Dict stores marker by name 
     const markerDict = {};
 
-    // Fcuntion to move the map and open a popup when users select a toilet
+    // Function to move the map and open a popup when users select a toilet
     function selectToilet(toilet, element) {
         const input = document.getElementById("address");
         if (input) input.value = toilet.name;
@@ -118,7 +116,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         const listContainer = document.getElementById("toa-list");
         listContainer.innerHTML = ""; 
 
-        // Sort list sort with name otherwise numberd with score highest to lowest
+        // Sort list sort with name otherwise numbered with score highest to lowest
         const sorted = [...toilets].sort((a, b) => {
             if (sortWith === 'name') return a.name.localeCompare(b.name);
             // Sort by numver b - a to ensure the highest values appear at top
@@ -143,6 +141,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                 iconSize: [30, 42],
                 iconAnchor: [15, 42] 
             });
+
             // Creates marker if it dosent already exist to avoid duping
             if (!markerDict[toilet.name]) {
                 const marker = L.marker([toilet.lat, toilet.lng], { icon: brownIcon }) 
