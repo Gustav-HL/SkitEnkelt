@@ -6,21 +6,25 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 import Resources.*;
 
 public class ToiletHandler {
     private FeatureCollection featureCollection;
-    private String toiletsUrl = "https://ckan-malmo.dataplatform.se/dataset/82b9290d-bd82-4611-ae28-161f95c71339/resource/81b70be0-1860-467f-bfcc-5bf70d094dd0/download/offentliga_toaletter.json";
+    private final String toiletsUrl = "https://ckan-malmo.dataplatform.se/dataset/82b9290d-bd82-4611-ae28-161f95c71339/resource/81b70be0-1860-467f-bfcc-5bf70d094dd0/download/offentliga_toaletter.json";
 
     public ToiletHandler() {
-        Gson gson = new Gson();
+        getToiletsAnew();
+    }
+
+    public void getToiletsAnew() {
         JsonReader reader = new JsonReader(new StringReader(callToiletsAPI()));
+        Gson gson = new Gson();
         this.featureCollection = gson.fromJson(reader, FeatureCollection.class);
     }
 
@@ -39,24 +43,25 @@ public class ToiletHandler {
 
 
     public void getAllToilets(Context ctx) {
+        getToiletsAnew();
         List<Toilet> toilets = featureCollection.features.stream()
                 .map(f ->
 
                         new Toilet(
-                        f.properties.id,
-                        f.properties.name,
-                        f.geometry.coordinates.get(0),
-                        f.geometry.coordinates.get(1),
-                        f.properties.change_table_child,
-                        f.properties.fee,
-                        f.properties.wc
-                )
+                                f.properties.id,
+                                f.properties.name,
+                                f.geometry.coordinates.get(0),
+                                f.geometry.coordinates.get(1),
+                                f.properties.change_table_child,
+                                f.properties.fee,
+                                f.properties.wc
+                        )
 
                 )
                 .collect(Collectors.toList());
         //queryList ämnar effektivisera till hur filter hanteras, görs för nuvarande endast manuellt
         Map<String, List<String>> queryList = ctx.queryParamMap();
-        if(!queryList.equals("{}")){
+        if (!queryList.equals("{}")) {
             toilets = filterToilets(ctx, queryList, toilets);
         }
         ctx.json(toilets);
@@ -69,22 +74,21 @@ public class ToiletHandler {
         String nbrWcs = ctx.queryParam("wc");
 
 
-
         //Nuvarande existerande filerhanteringar: tableChild, fee, wcs
         if (tableChild != null) {
             toilets.removeIf(t -> t.getChange_table_child() < 1);
         }
-        if(feeExist != null) {
+        if (feeExist != null) {
             toilets.removeIf(t -> t.getFee() != null && !t.getFee().isEmpty());
         }
-        if(nbrWcs != null && !nbrWcs.isBlank()){
+        if (nbrWcs != null && !nbrWcs.isBlank()) {
             int minWc = Integer.parseInt(nbrWcs);
             toilets.removeIf(t -> t.getNbrWcs() < minWc);
         }
         return toilets;
     }
 
-    public void addReview(Context ctx){
+    public void addReview(Context ctx) {
     }
 
     public void proximitySearch(Context ctx) {
