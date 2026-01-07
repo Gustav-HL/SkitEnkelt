@@ -7,14 +7,16 @@ public class Toilet {
     private double lat;
     private int change_table_child;
     private String fee;
+    private int nbrWcs;
 
-    public Toilet(int id, String name, double lng, double lat, int change_table_child, String fee) {
+    public Toilet(int id, String name, double lng, double lat, int change_table_child, String fee, int nbrWcs) {
         this.id = id;
         this.name = name;
         this.lng = lng;
         this.lat = lat;
         this.change_table_child = change_table_child;
         this.fee = fee;
+        this.nbrWcs = nbrWcs;
     }
 
     public void setId(int id) {
@@ -63,5 +65,13 @@ public class Toilet {
 
     public void setFee(String fee) {
         this.fee = fee;
+    }
+
+    public int getNbrWcs() {
+        return nbrWcs;
+    }
+
+    public void setNbrWcs(int nbrWcs){
+        this.nbrWcs = nbrWcs;
     }
 }

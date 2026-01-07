@@ -1,26 +1,44 @@
 import Resources.*;
 import io.javalin.Javalin;
+import io.javalin.http.staticfiles.Location;
 import io.javalin.json.JavalinGson;
-import java.io.FileNotFoundException;
+
+import java.awt.*;
+import java.net.URI;
 
 public class App {
-    public static void main(String[] args) throws FileNotFoundException {
+    public static void main(String[] args) {
         ToiletHandler toiletHandler = new ToiletHandler();
 
-        App runner = new App();
-        Javalin app = Javalin.create(config -> {
+        Javalin.create(config -> {
                     config.jsonMapper(new JavalinGson());
-            config.bundledPlugins.enableCors(cors -> {
-                cors.addRule(it -> {
-                    it.anyHost();
-                });
-            });
-        })
+                    config.bundledPlugins.enableCors(cors -> {
+                        cors.addRule(it -> {
+                            it.anyHost();
+                        });
+                    });
+                    //Lägger till en path för att starta webbläsaren när backenden startar upp.
+                    config.staticFiles.add(staticFiles -> {
+                        staticFiles.directory = "Frontend";
+                        staticFiles.location = Location.EXTERNAL;
+                    });
+                })
                 .get("/toilets", ctx -> {
                     toiletHandler.getAllToilets(ctx);
                 })
                 .post("/", ctx -> toiletHandler.addReview(ctx))
                 .start(7070);
+
+
+        //Startar webbläsaren när App.java exekverar, om möjligt.
+        //Annars händer ingenting förutom en liten utskrift i terminalen
+        try {
+            if (Desktop.isDesktopSupported()) {
+                Desktop.getDesktop().browse(new URI("http://localhost:7070/test.html"));
+            }
+        } catch (Exception e) {
+            System.out.println("Starta html-filen manuellt.");
+        }
     }
 
 
