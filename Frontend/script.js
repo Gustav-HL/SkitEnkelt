@@ -63,7 +63,13 @@ document.addEventListener("DOMContentLoaded", async function () {
         const data = await res.json();
         toilets = data;
         console.log(data);
-        sidebarContent(); 
+
+        //Rensar bort alla existerande toaletter som redan är på kartan
+        for (const key in markerDict) {
+            markerDict[key].remove();
+            delete markerDict[key];
+        }
+        sidebarContent();
         // data.forEach(t => {
         //     L.marker([t.lat, t.lng]).addTo(map).bindPopup(t.name);
         //     const li = document.createElement("li");
@@ -185,7 +191,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     // if (testButton) {
     //     testButton.addEventListener("click", getAllToilets);
     // }
-    
+
     // Run function on startup
     getAllToilets();
 });
