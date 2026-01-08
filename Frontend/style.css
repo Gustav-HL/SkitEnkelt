@@ -43,6 +43,10 @@ body {
     /* padding: 15px; */
     z-index: 10;
     border-right: solid grey 5px;
+    display: flex;
+    flex-direction: column;
+    height: 100vh; 
+    overflow-y: auto; 
 }
 
 
