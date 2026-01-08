@@ -6,6 +6,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -92,6 +93,56 @@ public class ToiletHandler {
     }
 
     public void proximitySearch(Context ctx) {
+        String latParam = ctx.queryParam("lat");
+        String lonParam = ctx.queryParam("lon");
+        String rangeParam = ctx.queryParam("range"); //avstånd i meter
 
+        if (latParam == null || lonParam == null || rangeParam == null) {
+            ctx.status(400).result("lat, lon och range krävs");
+            return;
+        }
+
+        double lat = Double.parseDouble(latParam);
+        double lon = Double.parseDouble(lonParam);
+        double range = Double.parseDouble(rangeParam);
+
+        getToiletsAnew();
+        List<Toilet> toilets = featureCollection.features.stream()
+                .map(f -> new Toilet(
+                        f.properties.id,
+                        f.properties.name,
+                        f.geometry.coordinates.get(0),
+                        f.geometry.coordinates.get(1),
+                        f.properties.change_table_child,
+                        f.properties.fee,
+                        f.properties.wc
+                ))
+                .filter(t -> {
+                    double distance = calculateDistance(
+                            lat,
+                            lon,
+                            t.getLat(),
+                            t.getLng()
+                    );
+                    return distance <= range; //returnerar alla resultat som passar inom range.
+                })
+                .collect(Collectors.toList());
+
+        ctx.json(toilets);
+
+    }
+
+    private double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
+        double R = 6371000; //jordens diameter i meter
+        double dLat = Math.toRadians(lat2 - lat1);
+        double dLon = Math.toRadians(lon2 - lon1);
+
+        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2)
+                + Math.cos(Math.toRadians(lat1))
+                * Math.cos(Math.toRadians(lat2))
+                * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return R * c;
     }
 }
