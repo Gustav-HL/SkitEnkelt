@@ -7,6 +7,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -95,7 +96,8 @@ public class ToiletHandler {
     public void proximitySearch(Context ctx) {
         String latParam = ctx.queryParam("lat");
         String lonParam = ctx.queryParam("lon");
-        String rangeParam = ctx.queryParam("range"); //avstånd i meter
+        String rangeParam = ctx.queryParam("range");
+        String feeParam = ctx.queryParam("fee");
 
         if (latParam == null || lonParam == null || rangeParam == null) {
             ctx.status(400).result("lat, lon och range krävs");
@@ -105,8 +107,8 @@ public class ToiletHandler {
         double lat = Double.parseDouble(latParam);
         double lon = Double.parseDouble(lonParam);
         double range = Double.parseDouble(rangeParam);
-
         getToiletsAnew();
+
         List<Toilet> toilets = featureCollection.features.stream()
                 .map(f -> new Toilet(
                         f.properties.id,
@@ -117,20 +119,37 @@ public class ToiletHandler {
                         f.properties.fee,
                         f.properties.wc
                 ))
-                .filter(t -> {
-                    double distance = calculateDistance(
-                            lat,
-                            lon,
-                            t.getLat(),
-                            t.getLng()
-                    );
-                    return distance <= range; //returnerar alla resultat som passar inom range.
+                .filter(t -> calculateDistance(
+                        lat,
+                        lon,
+                        t.getLat(),
+                        t.getLng()
+                ) <= range)
+                .sorted((a, b) -> {
+                    double distA = calculateDistance(lat, lon, a.getLat(), a.getLng());
+                    double distB = calculateDistance(lat, lon, b.getLat(), b.getLng());
+                    return Double.compare(distA, distB);
                 })
                 .collect(Collectors.toList());
 
-        ctx.json(toilets);
+       //TODO lite extrafunktioner som går att slänga in.
+        int numberOfShittersCloseBy = 0;
+        int numbersOfChangingTables = 0;
+        for (Toilet t : toilets) {
+            numberOfShittersCloseBy += t.getNbrWcs();
+            numbersOfChangingTables += t.getChange_table_child();
 
+            double distance = calculateDistance(lat, lon, t.getLat(), t.getLng());
+            System.out.println(
+                    t.getName() + " → " + Math.round(distance) + " meters"
+            );
+        }
+        System.out.println("Number of toilets in range: " + numberOfShittersCloseBy);
+        System.out.println("Number of changing tables in range: " + numbersOfChangingTables);
+
+        ctx.json(toilets);
     }
+
 
     private double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
         double R = 6371000; //jordens diameter i meter
