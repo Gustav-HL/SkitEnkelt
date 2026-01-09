@@ -47,40 +47,47 @@ document.addEventListener("DOMContentLoaded", async function () {
     //
     // // Rita ut markers från listan
     // toilets.forEach(t => {
-    //     L.marker([t.lat, t.lng]).addTo(map).bindPopup(t.name);
+    //     L.marker([t.lat, t.lng]).addTo(map).bindPopup(t.id);
     // });
-    
-    let toilets = [];
-    // Fetch Data from backend
-    async function getAllToilets(){
+
+    async function getAllToilets() {
+        const hasChaningTable = document.getElementById("filterTable")?.checked;
+        const freeEntry = document.getElementById("filterFree")?.checked;
+        const toiletAmount = document.getElementById("filterAmount")?.value;
+
         const options = {
             method: "GET",
             headers: {
                 "Accept": "application/json"
             }
         };
-        const res = await fetch("http://localhost:7070/toilets", options);
-        const data = await res.json();
-        toilets = data;
-        console.log(data);
-
-        //Rensar bort alla existerande toaletter som redan är på kartan
-        for (const key in markerDict) {
-            markerDict[key].remove();
-            delete markerDict[key];
+        let queryParams = new URLSearchParams();
+        
+        // Back end filter queries
+        if (hasChaningTable) queryParams.append("change_table_child", "1");
+        if (freeEntry) queryParams.append("fee", "true");
+        if (toiletAmount > 0) {
+            queryParams.append("wc", toiletAmount);
         }
-        sidebarContent();
-        // data.forEach(t => {
-        //     L.marker([t.lat, t.lng]).addTo(map).bindPopup(t.name);
-        //     const li = document.createElement("li");
-        //     const reviewButton = document.createElement("button");
-        //     document.querySelector("#toa-item")
-        //     li.textContent = `${t.name}, ${t.lat}, ${t.lng}`;
-        //     reviewButton.textContent = 'Review'
-        //     li.append(reviewButton)
-        //     document.querySelector("#toa-list").append(li);
-        // });
+        // Creates full url, converts objects to a ful string for instence: 7070/toilets?wc=2&fee&change_table_child
+        const url = `http://localhost:7070/toilets?${queryParams.toString()}`;
+
+        const res = await fetch(url, options);
+        const data = await res.json();
+        
+        toilets = data;
+
+        // Clear old markers so theres no overlap
+        Object.values(markerDict).forEach(marker => map.removeLayer(marker));
+        for (let key in markerDict) delete markerDict[key];
+        console.log(data);
+        sidebarContent(); 
+
     }
+
+    let toilets = [];
+    // Fetch Data from backend
+   
     // async function rateAToilet() {
 
 
@@ -99,21 +106,18 @@ document.addEventListener("DOMContentLoaded", async function () {
     const markerDict = {};
 
     // Function to move the map and open a popup when users select a toilet
-    function selectToilet(toilet, element) {
-        const input = document.getElementById("address");
-        if (input) input.value = toilet.name;
-
+    function selectToilet(toilet, listElement) {
         map.flyTo([toilet.lat, toilet.lng], 16);
-        if (toilet.name in markerDict) {
-            markerDict[toilet.name].openPopup();
+        if (toilet.id in markerDict) {
+            markerDict[toilet.id].openPopup();
         }
 
         // Removes selected syling from lists
         document.querySelectorAll('.toilet_card').forEach(li => li.classList.remove('selected'));
 
         // Adds selected styling to the just clicked one
-        if (element) {
-            element.classList.add('selected');
+        if (listElement) {
+            listElement.classList.add('selected');
         }
     }
 
@@ -137,6 +141,9 @@ document.addEventListener("DOMContentLoaded", async function () {
                         <span><b>Kategori:</b> ${toilet.category}</span>
                         <span><b>Poäng:</b> ${toilet.score}/100</span>
                         <span><b>Sunkighet:</b> ${toilet.dankness}/100</span>
+                        <span><b>Antal toaletter:</b> ${toilet.nbrWcs}</span>
+                        <span><b>Avgift:</b> ${toilet.fee !== "" ? toilet.fee : "Gratis"}</span>
+                        <span><b>Skötbord:</b> ${toilet.change_table_child > 0 ? "Finns" : "Saknas"}</span>
                     </div>
                 </div>`;
 
@@ -149,11 +156,11 @@ document.addEventListener("DOMContentLoaded", async function () {
             });
 
             // Creates marker if it dosent already exist to avoid duping
-            if (!markerDict[toilet.name]) {
+            if (!markerDict[toilet.id]) {
                 const marker = L.marker([toilet.lat, toilet.lng], { icon: brownIcon }) 
                     .addTo(map)
                     .bindPopup(popupContent);
-                markerDict[toilet.name] = marker;
+                markerDict[toilet.id] = marker;
             }
             // HTML for the list
             const li = document.createElement("li");
@@ -177,10 +184,28 @@ document.addEventListener("DOMContentLoaded", async function () {
         });
     }
 
+    const toiletSlider = document.getElementById("filterAmount");
+    const sliderLabelValue = document.getElementById("toiletAmount");
+
+    if (toiletSlider && sliderLabelValue) {
+        // Updates number next to slider
+        toiletSlider.addEventListener("input", function() {
+            sliderLabelValue.textContent = this.value;
+        });
+        //Calls backend handler
+        toiletSlider.addEventListener("change", function() {
+            getAllToilets();
+        });
+    }
     // The sort buttons 
     const standardView = document.getElementById("sortName");
     const sortWithPoints = document.getElementById("sortScore");
     const sortWithDank = document.getElementById("sortDankness");
+
+    // Filter event listners
+    document.getElementById("filterTable")?.addEventListener("change", getAllToilets);
+    document.getElementById("filterFree")?.addEventListener("change", getAllToilets);
+    document.getElementById("filterAmount")?.addEventListener("input", getAllToilets);
     
     // Events for what is clicked
     if (standardView) standardView.onclick = () => sidebarContent('name');
@@ -191,7 +216,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     // if (testButton) {
     //     testButton.addEventListener("click", getAllToilets);
     // }
-
+    
     // Run function on startup
     getAllToilets();
 });
