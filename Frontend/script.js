@@ -50,10 +50,15 @@ document.addEventListener("DOMContentLoaded", async function () {
     //     L.marker([t.lat, t.lng]).addTo(map).bindPopup(t.id);
     // });
 
+    var userMarker; 
+    var currentLat = null;
+    var currentLng = null;
+
     async function getAllToilets() {
         const hasChaningTable = document.getElementById("filterTable")?.checked;
         const freeEntry = document.getElementById("filterFree")?.checked;
         const toiletAmount = document.getElementById("filterAmount")?.value;
+        const rangeSlider = document.getElementById("rangeSlider")?.value;
 
         const options = {
             method: "GET",
@@ -68,6 +73,14 @@ document.addEventListener("DOMContentLoaded", async function () {
         if (freeEntry) queryParams.append("fee", "true");
         if (toiletAmount > 0) {
             queryParams.append("wc", toiletAmount);
+        }
+        if (currentLat && currentLng) {
+            queryParams.append("lat", currentLat);
+            queryParams.append("lon", currentLng);
+            queryParams.append("range", rangeSlider);
+            console.log( currentLat, currentLng, rangeSlider);
+        } else {
+            console.log("start/error");
         }
         // Creates full url, converts objects to a ful string for instence: 7070/toilets?wc=2&fee&change_table_child
         const url = `http://localhost:7070/toilets?${queryParams.toString()}`;
@@ -89,7 +102,6 @@ document.addEventListener("DOMContentLoaded", async function () {
     // Fetch Data from backend
    
     // async function rateAToilet() {
-
 
     // const options = {
     //     method: "POST",
@@ -175,7 +187,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
             // Connection to rateAToilet
             reviewButton.onclick = (e) => {
-                e.stopPropagation(); // Makes the review button the only place to click
+                e.stopPropagation();
                 rateAToilet(); 
             };
             li.appendChild(reviewButton);
@@ -197,6 +209,29 @@ document.addEventListener("DOMContentLoaded", async function () {
             getAllToilets();
         });
     }
+
+    function onMapClick(event) {
+        const markerFilter = document.getElementById("markerFilter")?.checked;
+    
+        if (!markerFilter) {
+            return; 
+        }
+    
+        currentLat = event.latlng.lat;
+        currentLng = event.latlng.lng;
+        currentRange = 500; 
+    
+        if (!userMarker) {
+            userMarker = L.marker(event.latlng).addTo(map);
+        } else {
+            userMarker.setLatLng(event.latlng);
+        }
+    
+        getAllToilets();
+    }
+
+    map.on('click', onMapClick);
+
     // The sort buttons 
     const standardView = document.getElementById("sortName");
     const sortWithPoints = document.getElementById("sortScore");
@@ -207,7 +242,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     document.getElementById("filterFree")?.addEventListener("change", getAllToilets);
     document.getElementById("filterAmount")?.addEventListener("input", getAllToilets);
     
-    // Events for what is clicked
+    // Events for what sort button is clicked
     if (standardView) standardView.onclick = () => sidebarContent('name');
     if (sortWithPoints) sortWithPoints.onclick = () => sidebarContent('score');
     if (sortWithDank) sortWithDank.onclick = () => sidebarContent('dankness');
