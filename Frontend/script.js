@@ -1,7 +1,7 @@
 // Event Listner to finish HTML load before script
 document.addEventListener("DOMContentLoaded", async function () {
     // Load and display map
-    var map = L.map('map').setView([55.605, 13.003], 13);
+    const map = L.map('map').setView([55.605, 13.003], 13);
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
         attribution: '&copy; OpenStreetMap'
@@ -50,9 +50,10 @@ document.addEventListener("DOMContentLoaded", async function () {
     //     L.marker([t.lat, t.lng]).addTo(map).bindPopup(t.id);
     // });
 
-    var userMarker; 
-    var currentLat = null;
-    var currentLng = null;
+    let userMarker; 
+    let currentLat = null;
+    let currentLng = null;
+    let rangeArea;
 
     async function getAllToilets() {
         const hasChaningTable = document.getElementById("filterTable")?.checked;
@@ -186,8 +187,8 @@ document.addEventListener("DOMContentLoaded", async function () {
             reviewButton.className = "review-button";
 
             // Connection to rateAToilet
-            reviewButton.onclick = (e) => {
-                e.stopPropagation();
+            reviewButton.onclick = (event) => {
+                event.stopPropagation();
                 rateAToilet(); 
             };
             li.appendChild(reviewButton);
@@ -209,28 +210,66 @@ document.addEventListener("DOMContentLoaded", async function () {
             getAllToilets();
         });
     }
+    const rangeSlider = document.getElementById("rangeSlider");
+    const rangerNumber = document.getElementById("rangeNumber");
 
-    function onMapClick(event) {
+    if (rangeSlider && rangerNumber) {
+        // Updates number next to slider
+        rangeSlider.addEventListener("input", function() {
+            rangerNumber.textContent = this.value;
+        });
+
+        //Calls backend handler
+        rangeSlider.addEventListener("change", function() {
+            getAllToilets();
+        });
+    }
+
+    function markerMapPlacement(event) {
         const markerFilter = document.getElementById("markerFilter")?.checked;
-    
+        // Checks if marker checkbox is False and stops function in that case 
         if (!markerFilter) {
             return; 
         }
     
         currentLat = event.latlng.lat;
         currentLng = event.latlng.lng;
-        currentRange = 500; 
-    
-        if (!userMarker) {
-            userMarker = L.marker(event.latlng).addTo(map);
-        } else {
-            userMarker.setLatLng(event.latlng);
-        }
-    
+        const rangeValue = document.getElementById("rangeSlider")?.value;
+        // Creates or updates marker
+        // ||= Creates object if it dosnt exist otherwise does nothing. It's good shit!
+        userMarker ||= L.marker(event.latlng).addTo(map);
+        userMarker.setLatLng(event.latlng);
+
+        // Creates or updates a area around the marker
+        rangeArea ||= L.circle(event.latlng, {
+            color: '#a0522d',
+            fillColor: '#a0522d',
+            fillOpacity: 0.2,
+            weight: 1
+        }).addTo(map);
+
+        // Updatse the values
+        rangeArea.setLatLng(event.latlng).setRadius(rangeValue);
         getAllToilets();
     }
 
-    map.on('click', onMapClick);
+    document.getElementById("markerFilter")?.addEventListener("change", function() {
+        if (!this.checked) {
+            if (userMarker) {
+                map.removeLayer(userMarker);
+                userMarker = null;
+            }
+            if (rangeArea) {
+                map.removeLayer(rangeArea);
+                rangeArea = null;
+            }
+            currentLat = null;
+            currentLng = null;
+            getAllToilets(); 
+        }
+    });
+
+    map.on('click', markerMapPlacement);
 
     // The sort buttons 
     const standardView = document.getElementById("sortName");
