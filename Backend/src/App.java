@@ -4,10 +4,11 @@ import io.javalin.http.staticfiles.Location;
 import io.javalin.json.JavalinGson;
 
 import java.awt.*;
+import java.io.FileNotFoundException;
 import java.net.URI;
 
 public class App {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws FileNotFoundException {
         ToiletHandler toiletHandler = new ToiletHandler();
 
         Javalin.create(config -> {

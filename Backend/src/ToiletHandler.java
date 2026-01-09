@@ -21,14 +21,17 @@ public class ToiletHandler {
     private final String toiletsUrl = "https://ckan-malmo.dataplatform.se/dataset/82b9290d-bd82-4611-ae28-161f95c71339/resource/81b70be0-1860-467f-bfcc-5bf70d094dd0/download/offentliga_toaletter.json";
     static Reviews reviewsCollection ;
 
-    public ToiletHandler() {
+    public ToiletHandler() throws FileNotFoundException {
         getToiletsAnew();
     }
 
-    public void getToiletsAnew() {
+    public void getToiletsAnew() throws FileNotFoundException {
         JsonReader reader = new JsonReader(new StringReader(callToiletsAPI()));
+        JsonReader reviewReader = new JsonReader(new FileReader("./reviews.json"));
         Gson gson = new Gson();
         this.featureCollection = gson.fromJson(reader, FeatureCollection.class);
+        reviewsCollection = gson.fromJson(reviewReader, Reviews.class);
+
     }
 
 
@@ -45,7 +48,7 @@ public class ToiletHandler {
     }
 
 
-    public void getAllToilets(Context ctx) {
+    public void getAllToilets(Context ctx) throws FileNotFoundException {
         getToiletsAnew();
         List<Toilet> toilets = featureCollection.features.stream()
                 .map(f ->
@@ -112,7 +115,7 @@ public class ToiletHandler {
         return result;
     }
 
-    public void proximitySearch(Context ctx) {
+    public void proximitySearch(Context ctx) throws FileNotFoundException {
         String latParam = ctx.queryParam("lat");
         String lonParam = ctx.queryParam("lon");
         String rangeParam = ctx.queryParam("range");
