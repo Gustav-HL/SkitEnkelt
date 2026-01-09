@@ -27,9 +27,7 @@ public class App {
                     toiletHandler.getAllToilets(ctx);
 
                 })
-                .get("/toilets/proximity", ctx -> toiletHandler.proximitySearch(ctx)) //hitta toaletter i närheten (med lat, lon och range (meter) som indata)
-                //TODO http://localhost:7070/toilets/proximity?lat=55.605&lon=13.003&range=500 detta är ett API-call för att hämta närmaste toaletter.
-                // Vi hade kanske velat ha en scroll på hemsidan som ställer in range. Alternativt en egen flik, kanske hittar närmaste toaletterna till ens egen position.
+                //TODO- Vi hade kanske velat ha en scroll på hemsidan som ställer in range. Alternativt en egen flik, kanske hittar närmaste toaletterna till ens egen position.
                 .post("/", ctx -> toiletHandler.addReview(ctx))
                 .start(7070);
 
