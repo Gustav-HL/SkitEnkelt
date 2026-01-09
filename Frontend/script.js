@@ -145,6 +145,9 @@ document.addEventListener("DOMContentLoaded", async function () {
                         <span><b>Avgift:</b> ${toilet.fee !== "" ? toilet.fee : "Gratis"}</span>
                         <span><b>Skötbord:</b> ${toilet.change_table_child > 0 ? "Finns" : "Saknas"}</span>
                     </div>
+                    <button class="review-button pop-up review" data-toilet-id="${toilet.id}">
+                        Review 
+                    </button>
                 </div>`;
 
             // Custom marker on map
@@ -176,7 +179,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             // Connection to rateAToilet
             reviewButton.onclick = (e) => {
                 e.stopPropagation(); // Makes the review button the only place to click
-                rateAToilet(); 
+                selectToilet(toilet, li); 
             };
             li.appendChild(reviewButton);
             li.onclick = () => selectToilet(toilet, li);
