@@ -9,6 +9,16 @@
       "rating": 2.0,
       "description": "Very dirty",
       "photo": ""
+    },
+    {
+      "id": 2,
+      "author": "im_a_unicorn",
+      "date": "2024-06-01",
+      "toiletId": 49,
+      "toiletName": "Badhusparken",
+      "rating": 4.0,
+      "description": "Very nice!",
+      "photo": ""
     }
   ]
 }
