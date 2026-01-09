@@ -77,6 +77,7 @@ public class ToiletHandler {
         if (!queryList.equals("{}")) {
             toilets = filterToilets(ctx, queryList, toilets);
         }
+
         ctx.json(toilets);
     }
 
