@@ -19,6 +19,7 @@ import Resources.*;
 public class ToiletHandler {
     private FeatureCollection featureCollection;
     private final String toiletsUrl = "https://ckan-malmo.dataplatform.se/dataset/82b9290d-bd82-4611-ae28-161f95c71339/resource/81b70be0-1860-467f-bfcc-5bf70d094dd0/download/offentliga_toaletter.json";
+    static Reviews reviewsCollection ;
 
     public ToiletHandler() {
         getToiletsAnew();
@@ -49,15 +50,22 @@ public class ToiletHandler {
         List<Toilet> toilets = featureCollection.features.stream()
                 .map(f ->
 
-                        new Toilet(
-                                f.properties.id,
-                                f.properties.name,
-                                f.geometry.coordinates.get(0),
-                                f.geometry.coordinates.get(1),
-                                f.properties.change_table_child,
-                                f.properties.fee,
-                                f.properties.wc
-                        )
+                        {
+                            try {
+                                return new Toilet(
+                                        f.properties.id,
+                                        f.properties.name,
+                                        f.geometry.coordinates.get(0),
+                                        f.geometry.coordinates.get(1),
+                                        f.properties.change_table_child,
+                                        f.properties.fee,
+                                        f.properties.wc,
+                                        getReviewsForSelectedToilet(f.properties.id)
+                                );
+                            } catch (FileNotFoundException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
 
                 )
                 .collect(Collectors.toList());
@@ -93,6 +101,17 @@ public class ToiletHandler {
     public void addReview(Context ctx) {
     }
 
+    public static List<Review> getReviewsForSelectedToilet(int toiletId) throws FileNotFoundException {
+        List<Review> result = new ArrayList<>();
+
+        for(Review review : reviewsCollection.getReviews()){
+            if(review.getToiletId() == toiletId){
+                result.add(review);
+            }
+        }
+        return result;
+    }
+
     public void proximitySearch(Context ctx) {
         String latParam = ctx.queryParam("lat");
         String lonParam = ctx.queryParam("lon");
@@ -110,15 +129,22 @@ public class ToiletHandler {
         getToiletsAnew();
 
         List<Toilet> toilets = featureCollection.features.stream()
-                .map(f -> new Toilet(
-                        f.properties.id,
-                        f.properties.name,
-                        f.geometry.coordinates.get(0),
-                        f.geometry.coordinates.get(1),
-                        f.properties.change_table_child,
-                        f.properties.fee,
-                        f.properties.wc
-                ))
+                .map(f -> {
+                    try {
+                        return new Toilet(
+                                f.properties.id,
+                                f.properties.name,
+                                f.geometry.coordinates.get(0),
+                                f.geometry.coordinates.get(1),
+                                f.properties.change_table_child,
+                                f.properties.fee,
+                                f.properties.wc,
+                                getReviewsForSelectedToilet(f.properties.id)
+                        );
+                    } catch (FileNotFoundException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
                 .filter(t -> calculateDistance(
                         lat,
                         lon,
