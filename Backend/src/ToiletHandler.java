@@ -17,6 +17,7 @@ public class ToiletHandler {
     private FeatureCollection featureCollection;
     static Reviews reviewsCollection;
     private final String toiletsUrl = "https://ckan-malmo.dataplatform.se/dataset/82b9290d-bd82-4611-ae28-161f95c71339/resource/81b70be0-1860-467f-bfcc-5bf70d094dd0/download/offentliga_toaletter.json";
+    private final String reviewsUrl = "reviews.json";
     private final String R = String.valueOf(6371000);
 
     public ToiletHandler() throws FileNotFoundException {
@@ -35,7 +36,10 @@ public class ToiletHandler {
     public String callToiletsAPI() {
         try {
             HttpClient client = HttpClient.newHttpClient();
-            HttpRequest request = HttpRequest.newBuilder().uri(URI.create(toiletsUrl)).header("Accept", "application/json").GET().build();
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(toiletsUrl))
+                    .header("Accept", "application/json")
+                    .GET().build();
             return client.send(request, HttpResponse.BodyHandlers.ofString()).body();
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -43,6 +47,18 @@ public class ToiletHandler {
             throw new RuntimeException(e);
         }
     }
+
+    public String postReviewAPI(String reviewsUrl, String reviewJson){
+        try {
+            HttpClient client = HttpClient.newHttpClient();
+            HttpRequest request = HttpRequest.newBuilder().uri(URI.create(reviewsUrl)).header("Accept", "application/json").POST().build();
+            return client.send(request, HttpResponse.BodyHandlers.ofString()).body();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+
+        }
 
 
     public void getAllToilets(Context ctx) throws FileNotFoundException {
@@ -122,6 +138,8 @@ public class ToiletHandler {
     }
 
     public void addReview(Context ctx) {
+
+
     }
 
     public static List<Review> getReviewsForSelectedToilet(int toiletId) throws FileNotFoundException {
@@ -147,4 +165,6 @@ public class ToiletHandler {
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         return Double.parseDouble(R) * c;
     }
+
+
 }
