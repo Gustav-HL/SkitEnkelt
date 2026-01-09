@@ -172,7 +172,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                 <strong>${toilet.name}</strong>
                 <small>Poäng: ${toilet.score} | Sunkighet: ${toilet.dankness}</small>
             `;
-            const reviewButton = document.createElement("button");
+            /*const reviewButton = document.createElement("button");
             reviewButton.textContent = 'Review';
             reviewButton.className = "review-button";
 
@@ -182,6 +182,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                 selectToilet(toilet, li); 
             };
             li.appendChild(reviewButton);
+            */
             li.onclick = () => selectToilet(toilet, li);
             listContainer.appendChild(li);
         });
