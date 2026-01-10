@@ -338,28 +338,55 @@ body {
 }
 
 .filter-dropdown {
-    margin: 10px 0;
+    margin:  0;
     border-bottom: 1px solid var(--border-light);
     padding-bottom: 10px;
 }
 
-/* Knappen man klickar på */
-.filter-dropdown summary {
-    list-style: none; /* Tar bort standard-pilen */
-    cursor: pointer;
-    font-weight: bold;
-    font-size: 0.9rem;
-    color: var(--text-main);
+/* Ta bort standard-pilen */
+summary {
+    list-style: none;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px;
-    background: var(--bg-tab-inactive);
-    border-radius: 5px;
+    padding: 12px;
+    cursor: pointer;
+    background: var(--bg-card);
+    border-radius: 8px;
+    margin: 8px;
+    font-weight: bold;
 }
 
-.filter-dropdown .filters {
+summary::-webkit-details-marker {
+    display: none;
+}
+
+/* Behållaren som hanterar animationen */
+.dropdown-content {
+    display: grid;
+    grid-template-rows: 0fr; /* Startar stängd */
+    transition: grid-template-rows 0.3s ease-out, opacity 0.2s;
+    opacity: 0;
+    overflow: hidden;
+}
+
+/* När användaren klickar på details */
+.filter-dropdown[open] .dropdown-content {
+    grid-template-rows: 1fr; /* Panorerar ut */
+    opacity: 1;
+}
+
+/* Den inre behållaren måste ha min-height: 0 för att grid-tricket ska fungera */
+.filters {
+    min-height: 0;
     padding: 15px 10px;
-    background: #f9f9f9; /* Eller din egen bakgrundsfärg */
-    border-radius: 0 0 5px 5px;
+}
+
+/* Bonus: Rotera pil-ikonen snyggt */
+summary i {
+    transition: transform 0.3s ease;
+}
+
+.filter-dropdown[open] summary i {
+    transform: rotate(180deg);
 }
