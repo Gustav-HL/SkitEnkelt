@@ -6,6 +6,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
@@ -22,6 +23,7 @@ public class ToiletHandler {
     private final String toiletsUrl = "https://ckan-malmo.dataplatform.se/dataset/82b9290d-bd82-4611-ae28-161f95c71339/resource/81b70be0-1860-467f-bfcc-5bf70d094dd0/download/offentliga_toaletter.json";
     private final String reviewsUrl = "reviews.json";
     private final String R = String.valueOf(6371000);
+    Gson gson = new Gson();
 
     public ToiletHandler() throws FileNotFoundException {
         getToiletsAnew();
@@ -30,7 +32,7 @@ public class ToiletHandler {
     public void getToiletsAnew() throws FileNotFoundException {
         JsonReader reader = new JsonReader(new StringReader(callToiletsAPI()));
         JsonReader reviewReader = new JsonReader(new FileReader("./reviews.json"));
-        Gson gson = new Gson();
+
         this.featureCollection = gson.fromJson(reader, FeatureCollection.class);
         reviewsCollection = gson.fromJson(reviewReader, Reviews.class);
     }
@@ -104,7 +106,7 @@ public class ToiletHandler {
                                         f.properties.change_table_child,
                                         f.properties.fee,
                                         f.properties.wc,
-                                        getReviewsForSelectedToilet(f.properties.id)
+                                        getReviewsByToiletId(f.properties.id)
                                 );
                             } catch (FileNotFoundException e) {
                                 throw new RuntimeException(e);
@@ -152,56 +154,40 @@ public class ToiletHandler {
         ctx.json(toilets);
     }
 
-    public void addReview(int id, String author,
-                          String date, int toiletId, String toiletName, double rating, String description, String photo) {
-        String reviewJson = """
-    {
-      "id": "%s",
-      "author": "%s",
-      "date": "%s",
-      "toiletId": "%s",
-      "toiletName": "%s",
-      "rating": %s,
-      "description": "%s",
-      "photo": "%s"
-    }
-    """.formatted(
-                id,
-                escapeJson(author),
-                escapeJson(date),
-                toiletId,
-                escapeJson(toiletName),
-                rating,
-                escapeJson(description),
-                escapeJson(photo)
+    public void addReview(Context ctx) throws FileNotFoundException {
+        getToiletsAnew();
 
-        );
+        Review incoming = ctx.bodyAsClass(Review.class);
 
-        Path file = Path.of("reviews.json");
+        // auto id: max + 1 (your placeholders => starts at 3)
+        int maxId = 0;
+        for (Review r : reviewsCollection.getReviews()) {
+            if (r.getId() > maxId) maxId = r.getId();
+        }
+        incoming.setId(maxId + 1);
+
+        reviewsCollection.getReviews().add(incoming);
+
+        Gson gson = new Gson();
+        String updated = gson.toJson(reviewsCollection);
 
         try {
             Files.writeString(
-                    file,
-                    reviewJson + System.lineSeparator(),
+                    Path.of("./reviews.json"),
+                    updated,
+                    StandardCharsets.UTF_8,
                     StandardOpenOption.CREATE,
-                    StandardOpenOption.APPEND
+                    StandardOpenOption.TRUNCATE_EXISTING
             );
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
+        ctx.status(201).json(incoming);
     }
 
-    // Minimal JSON string escaping so quotes/newlines don't break JSON
-    private static String escapeJson(String s) {
-        if (s == null) return "";
-        return s.replace("\\", "\\\\")
-                .replace("\"", "\\\"")
-                .replace("\n", "\\n")
-                .replace("\r", "\\r");
-    }
 
-    public static List<Review> getReviewsForSelectedToilet(int toiletId) throws FileNotFoundException {
+    public static List<Review> getReviewsByToiletId(int toiletId) throws FileNotFoundException {
         List<Review> result = new ArrayList<>();
 
         for(Review review : reviewsCollection.getReviews()){
@@ -210,6 +196,22 @@ public class ToiletHandler {
             }
         }
         return result;
+    }
+
+    public void getReviewsByToiletIdFromContext(Context ctx) throws FileNotFoundException {
+        getToiletsAnew();
+
+        String tidParam = ctx.queryParam("toiletId");
+        if (tidParam == null) {
+            ctx.status(400).result("Missing query param: toiletId");
+            return;
+        }
+
+        int toiletId = Integer.parseInt(tidParam);
+
+        List<Review> reviews = getReviewsByToiletId(toiletId);
+
+        ctx.json(reviews);
     }
 
     private double calculateDistance(double lat1, double lon1, double lat2, double lon2) {//jordens diameter i meter

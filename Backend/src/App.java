@@ -28,8 +28,11 @@ public class App {
                     toiletHandler.getAllToilets(ctx);
 
                 })
+                .get("/reviews", ctx -> {
+                    toiletHandler.getReviewsByToiletIdFromContext(ctx);
+                })
                 //TODO- Vi hade kanske velat ha en scroll på hemsidan som ställer in range. Alternativt en egen flik, kanske hittar närmaste toaletterna till ens egen position.
-                .post("/", ctx -> toiletHandler.addReview(id, author))
+                .post("/reviews", ctx -> toiletHandler.addReview(ctx))
                 .start(7070);
 
 
