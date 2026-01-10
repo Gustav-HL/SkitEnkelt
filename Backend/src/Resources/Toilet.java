@@ -11,8 +11,9 @@ public class Toilet {
     private String fee;
     private int nbrWcs;
     private List<Review> reviews;
+    private String openingHours;
 
-    public Toilet(int id, String name, double lng, double lat, int change_table_child, String fee, int nbrWcs, List<Review> reviews) {
+    public Toilet(int id, String name, double lng, double lat, int change_table_child, String fee, int nbrWcs, List<Review> reviews, String openingHours) {
         this.id = id;
         this.name = name;
         this.lng = lng;
@@ -21,6 +22,7 @@ public class Toilet {
         this.fee = fee;
         this.nbrWcs = nbrWcs;
         this.reviews = reviews;
+        this.openingHours = openingHours;
     }
 
     public void setId(int id) {
@@ -85,5 +87,13 @@ public class Toilet {
 
     public void setReviews(List<Review> reviews) {
         this.reviews = reviews;
+    }
+
+    public String getOpeningHours() {
+        return openingHours;
+    }
+
+    public void setOpeningHours(String openingHours) {
+        this.openingHours = openingHours;
     }
 }

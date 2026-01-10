@@ -106,7 +106,8 @@ public class ToiletHandler {
                                         f.properties.change_table_child,
                                         f.properties.fee,
                                         f.properties.wc,
-                                        getReviewsByToiletId(f.properties.id)
+                                        getReviewsForSelectedToilet(f.properties.id),
+                                        f.properties.open_hours
                                 );
                             } catch (FileNotFoundException e) {
                                 throw new RuntimeException(e);

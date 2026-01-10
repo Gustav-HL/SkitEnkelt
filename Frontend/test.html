@@ -63,12 +63,19 @@
             <label>
                 <input type="checkbox" id="filterTable"> Skötbord
             </label>
+            <label>
+                <input type="checkbox" id="markerFilter"> Marker
+            </label>
 <!--            <label>-->
 <!--                <input type="checkbox" id="filterFree"> Gratis-->
 <!--            </label>-->
             <label>
-                <input type="range" id="filterAmount" min="0" max="8" value="0" step="1">
+                <input type="range" id="filterAmount" min="1" max="8" value="0" step="1">
                 <span id="toiletAmount" class="slider-number">0</span>
+            </label>
+            <label>
+                <input type="range" id="rangeSlider" min="100" max="4000" value="0" step="1">
+                <span id="rangeNumber" class="slider-number">1500</span>
             </label>
         </div>
         <ul id="toa-list"></ul>
