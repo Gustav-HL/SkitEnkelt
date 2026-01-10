@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         maxZoom: 19,
         attribution: '&copy; OpenStreetMap'
     }).addTo(map);
-    
+
     // TOALETT-DATABAS, ska kompletteras med getmetoder från vårt API
     // const toilets = [
     //         {
@@ -50,7 +50,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     //     L.marker([t.lat, t.lng]).addTo(map).bindPopup(t.id);
     // });
 
-    let userMarker; 
+    let userMarker;
     let currentLat = null;
     let currentLng = null;
     let rangeArea;
@@ -68,7 +68,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             }
         };
         let queryParams = new URLSearchParams();
-        
+
         // Back end filter queries
         if (hasChaningTable) queryParams.append("change_table_child", "1");
         if (freeEntry) queryParams.append("fee", "true");
@@ -79,7 +79,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             queryParams.append("lat", currentLat);
             queryParams.append("lon", currentLng);
             queryParams.append("range", rangeSlider);
-            console.log( currentLat, currentLng, rangeSlider);
+            // console.log(currentLat, currentLng, rangeSlider);
         } else {
             console.log("start/error");
         }
@@ -88,20 +88,20 @@ document.addEventListener("DOMContentLoaded", async function () {
 
         const res = await fetch(url, options);
         const data = await res.json();
-        
+
         toilets = data;
 
         // Clear old markers so theres no overlap
         Object.values(markerDict).forEach(marker => map.removeLayer(marker));
         for (let key in markerDict) delete markerDict[key];
         console.log(data);
-        sidebarContent(); 
+        sidebarContent();
 
     }
 
     let toilets = [];
     // Fetch Data from backend
-   
+
     // async function rateAToilet() {
 
     // const options = {
@@ -135,26 +135,34 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
 
     // Function to sort and show sidebar list
-    function sidebarContent(sortWith = 'name') {
+    function sidebarContent(sortWith = 'id') {
         const listContainer = document.getElementById("toa-list");
         const countContainer = document.getElementById("toilet-count");
-        listContainer.innerHTML = ""; 
+        listContainer.innerHTML = "";
 
         // Filters data to only include what is being searched OR blank and include all data
         const searchTerm = document.getElementById("toiletSearch")?.value.toLowerCase() || "";
-        const filtered = toilets.filter(t => 
+        const filtered = toilets.filter(t =>
             t.name.toLowerCase().includes(searchTerm)
-        ); 
+        );
         // Updates number showing amount of toilets found
         if (countContainer) {
             countContainer.textContent = filtered.length;
         }
-        // Sort list sort with name otherwise numbered with score highest to lowest
-        const sorted = [...filtered].sort((toiletA, toiletB) => {
-            if (sortWith === 'name') return toiletA.name.localeCompare(toiletB.name);
-            // Sort by numver b - a to ensure the highest values appear at top
-            return toiletB[sortWith] - toiletA[sortWith];
-        });
+        // Sort list sort with id otherwise numbered with score highest to lowest
+        const sorted = (!sortWith || sortWith === 'default' || sortWith === 'id')
+            ? [...filtered]
+            : [...filtered].sort((toiletA, toiletB) => {
+                if (sortWith === 'name') {
+                    return toiletA.name.localeCompare(toiletB.name);
+                }
+                const valA = parseFloat(toiletA[sortWith]);
+                const valB = parseFloat(toiletB[sortWith]);
+                if (sortWith === 'distance') {
+                    return (valA || 0) - (valB || 0);
+                }
+                return (valB || 0) - (valA || 0);
+            });
 
         sorted.forEach(toilet => {
             const popupContent = `
@@ -175,15 +183,15 @@ document.addEventListener("DOMContentLoaded", async function () {
 
             // Custom marker on map
             const brownIcon = L.divIcon({
-                className: 'marker-box', 
+                className: 'marker-box',
                 html: '<div class="marker-icon"></div>',
                 iconSize: [30, 42],
-                iconAnchor: [15, 42] 
+                iconAnchor: [15, 42]
             });
 
             // Creates marker if it dosent already exist to avoid duping
             if (!markerDict[toilet.id]) {
-                const marker = L.marker([toilet.lat, toilet.lng], { icon: brownIcon }) 
+                const marker = L.marker([toilet.lat, toilet.lng], { icon: brownIcon })
                     .addTo(map)
                     .bindPopup(popupContent);
                 markerDict[toilet.id] = marker;
@@ -192,7 +200,9 @@ document.addEventListener("DOMContentLoaded", async function () {
             const li = document.createElement("li");
             li.className = "toilet_card";
             li.innerHTML = `
-                <strong>${toilet.name}</strong> |  <strong>${toilet.distance}</strong>
+                <div>
+                <h4>${toilet.name}</h4> |  <h4>${toilet.distance} m</h4>
+                </div>
                 <small>Poäng: ${toilet.score} | Sunkighet: ${toilet.dankness}</small>
             `;
 
@@ -205,11 +215,11 @@ document.addEventListener("DOMContentLoaded", async function () {
     const sliderLabelValue = document.getElementById("toiletAmount");
     if (toiletSlider && sliderLabelValue) {
         // Updates number next to slider
-        toiletSlider.addEventListener("input", function() {
+        toiletSlider.addEventListener("input", function () {
             sliderLabelValue.textContent = this.value;
         });
         //Calls backend handler
-        toiletSlider.addEventListener("change", function() {
+        toiletSlider.addEventListener("change", function () {
             getAllToilets();
         });
     }
@@ -218,12 +228,12 @@ document.addEventListener("DOMContentLoaded", async function () {
     const rangerNumber = document.getElementById("rangeNumber");
     if (rangeSlider && rangerNumber) {
         // Updates number next to slider
-        rangeSlider.addEventListener("input", function() {
+        rangeSlider.addEventListener("input", function () {
             rangerNumber.textContent = this.value;
         });
 
         //Calls backend handler
-        rangeSlider.addEventListener("change", function() {
+        rangeSlider.addEventListener("change", function () {
             getAllToilets();
         });
     }
@@ -232,9 +242,9 @@ document.addEventListener("DOMContentLoaded", async function () {
         const markerFilter = document.getElementById("markerFilter")?.checked;
         // Checks if marker checkbox is False and stops function in that case 
         if (!markerFilter) {
-            return; 
+            return;
         }
-    
+
         currentLat = event.latlng.lat;
         currentLng = event.latlng.lng;
         const rangeValue = document.getElementById("rangeSlider")?.value;
@@ -256,7 +266,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         getAllToilets();
     }
 
-    document.getElementById("markerFilter")?.addEventListener("change", function() {
+    document.getElementById("markerFilter")?.addEventListener("change", function () {
         const rangeContainer = document.getElementById("rangeSliderContainer");
         if (!this.checked) {
             if (rangeContainer) rangeContainer.style.display = "none";
@@ -270,21 +280,35 @@ document.addEventListener("DOMContentLoaded", async function () {
             }
             currentLat = null;
             currentLng = null;
-            getAllToilets(); 
+            getAllToilets();
         }
         else {
-            // 3. Visa slidern om boxen blir ikryssad
             if (rangeContainer) rangeContainer.style.display = "block";
         }
     });
 
     map.on('click', markerMapPlacement);
 
+    map.on('locationfound', function(e) {
+        currentLat = e.latlng.lat;
+        currentLng = e.latlng.lng;
+        console.log(currentLng, currentLat)
+
+        getAllToilets();
+    });
+
+    map.on('locationerror', function(e) {
+        console.warn("GPS-lokalisering misslyckades: " + e.message);
+        getAllToilets();
+    });
+
+    map.locate({ setView: true, maxZoom: 14 });
+
     // The searchbar event listner only trigers if a value is input in html
     const searchInput = document.getElementById("toiletSearch");
     if (searchInput) {
-        searchInput.addEventListener("input", function() {
-            sidebarContent(); 
+        searchInput.addEventListener("input", function () {
+            sidebarContent();
         });
     }
 
@@ -297,9 +321,9 @@ document.addEventListener("DOMContentLoaded", async function () {
     const standardView = document.getElementById("sortName");
     const sortWithPoints = document.getElementById("sortScore");
     const sortWithDank = document.getElementById("sortDankness");
-    
+
     // Events for what sort button is clicked
-    if (standardView) standardView.onclick = () => sidebarContent('name');
+    if (standardView) standardView.onclick = () => sidebarContent('id');
     if (sortWithPoints) sortWithPoints.onclick = () => sidebarContent('score');
     if (sortWithDank) sortWithDank.onclick = () => sidebarContent('dankness');
 
@@ -307,7 +331,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     // if (testButton) {
     //     testButton.addEventListener("click", getAllToilets);
     // }
-    
+
     // Run function on startup
     getAllToilets();
 });
@@ -316,10 +340,10 @@ document.addEventListener("DOMContentLoaded", async function () {
 const buttons = document.querySelectorAll('.tab-buttons');
 
 buttons.forEach(button => {
-    button.addEventListener('click', function() {
+    button.addEventListener('click', function () {
         buttons.forEach(btn => btn.classList.remove('active'));
-        
+
         this.classList.add('active');
-        
+
     });
 });

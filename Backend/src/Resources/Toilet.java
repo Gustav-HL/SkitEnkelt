@@ -14,7 +14,7 @@ public class Toilet {
     private String openingHours;
 
 
-    private Double distance;
+    private int distance;
 
     public Toilet(int id, String name, double lng, double lat, int change_table_child, String fee, int nbrWcs, List<Review> reviews, String openingHours) {
         this.id = id;
@@ -80,7 +80,7 @@ public class Toilet {
         return nbrWcs;
     }
 
-    public void setNbrWcs(int nbrWcs){
+    public void setNbrWcs(int nbrWcs) {
         this.nbrWcs = nbrWcs;
     }
 
@@ -101,11 +101,11 @@ public class Toilet {
     }
 
 
-    public Double getDistance() {
+    public int getDistance() {
         return distance;
     }
 
     public void setDistance(Double distance) {
-        this.distance = distance;
+        this.distance = (int) Math.round(distance);
     }
 }

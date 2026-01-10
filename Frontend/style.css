@@ -21,16 +21,17 @@
     --text-black: #000000;
 }
 
-
 body {
     margin: 0;
-    /* font-family: Arial, sans-serif; */
-    font-family: 'Roboto', sans-serif;
+    font-family: Arial, sans-serif;
+    /* font-family: 'Roboto', sans-serif; */
     display: flex;
     height: 100vh;
     overflow: hidden;
 }
-
+#toilet-amount{
+    margin: 10px 0 0 0;
+}
 /* Sidopanel */
 #sidebar {
     width: 23%;
@@ -122,15 +123,15 @@ body {
 
 .tab-buttons {
     flex: 1;
-    padding: 10px 13px;
+    padding: 10px 8px; 
     border: none;
     background-color: var(--bg-tab-inactive);
     cursor: pointer;
     font-size: 0.9rem;
     transition: background 0.2s;
     border-right: 1px solid var(--border-light);
+    white-space: nowrap;       
 }
-
 /* The active pressed button with the brown underscore */
 .tab-buttons.active {
     color: var(--primary-dark);
@@ -155,6 +156,9 @@ body {
     box-shadow: 0 2px 4px rgba(0,0,0,0.05); 
     transition: all 0.2s ease;
     border: 1px solid transparent;
+}
+.toilet_card h4{
+    display: inline;
 }
 
 .toilet_card strong {
@@ -331,4 +335,31 @@ body {
     margin-left: auto;
     margin-right: 30px;
     margin: 0 10;
+}
+
+.filter-dropdown {
+    margin: 10px 0;
+    border-bottom: 1px solid var(--border-light);
+    padding-bottom: 10px;
+}
+
+/* Knappen man klickar på */
+.filter-dropdown summary {
+    list-style: none; /* Tar bort standard-pilen */
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 0.9rem;
+    color: var(--text-main);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background: var(--bg-tab-inactive);
+    border-radius: 5px;
+}
+
+.filter-dropdown .filters {
+    padding: 15px 10px;
+    background: #f9f9f9; /* Eller din egen bakgrundsfärg */
+    border-radius: 0 0 5px 5px;
 }
