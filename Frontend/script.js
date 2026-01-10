@@ -54,6 +54,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     let currentLat = null;
     let currentLng = null;
     let rangeArea;
+    let routingActive = null;
 
     async function getAllToilets() {
         const hasChaningTable = document.getElementById("filterTable")?.checked;
@@ -132,6 +133,28 @@ document.addEventListener("DOMContentLoaded", async function () {
         if (listElement) {
             listElement.classList.add('selected');
         }
+
+        // Adds routing lines from position to selected toilet
+        const routingEnabled = document.getElementById("routingToggle")?.checked;
+        if (routingActive) {
+            map.removeControl(routing);
+            routingActive = null;
+        }
+        if (routingEnabled) {
+            routeTo(currentLat, currentLng, toilet.lat, toilet.lng);
+        }
+        
+    }
+
+    function routeTo(fromLat, fromLng, toLat, toLng) {
+        routing = L.Routing.control({
+            waypoints: [
+                L.latLng(fromLat, fromLng),
+                L.latLng(toLat, toLng)
+            ]
+        }).addTo(map);
+        routingActive = true;
+
     }
 
     // Function to sort and show sidebar list
@@ -238,6 +261,11 @@ document.addEventListener("DOMContentLoaded", async function () {
         });
     }
 
+
+
+
+
+
     function markerMapPlacement(event) {
         const markerFilter = document.getElementById("markerFilter")?.checked;
         // Checks if marker checkbox is False and stops function in that case 
@@ -289,7 +317,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     map.on('click', markerMapPlacement);
 
-    map.on('locationfound', function(e) {
+    map.on('locationfound', function (e) {
         currentLat = e.latlng.lat;
         currentLng = e.latlng.lng;
         console.log(currentLng, currentLat)
@@ -297,7 +325,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         getAllToilets();
     });
 
-    map.on('locationerror', function(e) {
+    map.on('locationerror', function (e) {
         console.warn("GPS-lokalisering misslyckades: " + e.message);
         getAllToilets();
     });

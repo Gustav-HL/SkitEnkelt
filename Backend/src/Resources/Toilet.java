@@ -12,8 +12,6 @@ public class Toilet {
     private int nbrWcs;
     private List<Review> reviews;
     private String openingHours;
-
-
     private int distance;
 
     public Toilet(int id, String name, double lng, double lat, int change_table_child, String fee, int nbrWcs, List<Review> reviews, String openingHours) {
@@ -80,7 +78,7 @@ public class Toilet {
         return nbrWcs;
     }
 
-    public void setNbrWcs(int nbrWcs) {
+    public void setNbrWcs(int nbrWcs){
         this.nbrWcs = nbrWcs;
     }
 
