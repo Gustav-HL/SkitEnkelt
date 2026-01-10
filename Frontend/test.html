@@ -11,7 +11,7 @@
     <!-- LEaflet Plugins-->
     <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet-minimap/dist/Control.MiniMap.min.css" />
-
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
     <!-- lokal CSS -->
     <link rel="stylesheet" href="style.css">
     <!-- Font awsome icons -->
@@ -70,10 +70,13 @@
         </div>
 
         <div class="search-section">
-            <input type="text" id="toiletSearch" placeholder="Sök efter toalett...">
+
+                <input type="checkbox" id="routingToggle"> routing </input>
+
         </div>
 
         <details class="filter-dropdown">
+
             <summary>Fler filter <i class="fa-solid fa-chevron-down"></i></summary>
 
             <div class="filters">
@@ -88,7 +91,9 @@
                         <i class="fa-solid fa-location-crosshairs"></i>
                         <span>Sök i område</span>
                     </label>
+
                 </div>
+
 
                 <div class="slider-container" id="rangeSliderContainer" style="display: none;">
                     <label for="rangeSlider">Sökradie runt markör:</label>
