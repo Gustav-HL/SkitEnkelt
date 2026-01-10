@@ -1,5 +1,7 @@
 package Resources;
 
+import java.util.List;
+
 public class Toilet {
     private int id;
     private String name;
@@ -8,8 +10,10 @@ public class Toilet {
     private int change_table_child;
     private String fee;
     private int nbrWcs;
+    private List<Review> reviews;
+    private String openingHours;
 
-    public Toilet(int id, String name, double lng, double lat, int change_table_child, String fee, int nbrWcs) {
+    public Toilet(int id, String name, double lng, double lat, int change_table_child, String fee, int nbrWcs, List<Review> reviews, String openingHours) {
         this.id = id;
         this.name = name;
         this.lng = lng;
@@ -17,6 +21,8 @@ public class Toilet {
         this.change_table_child = change_table_child;
         this.fee = fee;
         this.nbrWcs = nbrWcs;
+        this.reviews = reviews;
+        this.openingHours = openingHours;
     }
 
     public void setId(int id) {
@@ -73,5 +79,21 @@ public class Toilet {
 
     public void setNbrWcs(int nbrWcs){
         this.nbrWcs = nbrWcs;
+    }
+
+    public List<Review> getReviews() {
+        return reviews;
+    }
+
+    public void setReviews(List<Review> reviews) {
+        this.reviews = reviews;
+    }
+
+    public String getOpeningHours() {
+        return openingHours;
+    }
+
+    public void setOpeningHours(String openingHours) {
+        this.openingHours = openingHours;
     }
 }

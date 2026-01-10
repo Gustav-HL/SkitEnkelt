@@ -158,6 +158,9 @@ document.addEventListener("DOMContentLoaded", async function () {
                         <span><b>Avgift:</b> ${toilet.fee !== "" ? toilet.fee : "Gratis"}</span>
                         <span><b>Skötbord:</b> ${toilet.change_table_child > 0 ? "Finns" : "Saknas"}</span>
                     </div>
+                    <button class="review-button pop-up review" data-toilet-id="${toilet.id}">
+                        Review 
+                    </button>
                 </div>`;
 
             // Custom marker on map
