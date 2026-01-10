@@ -83,7 +83,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         } else {
             console.log("start/error");
         }
-        // Creates full url, converts objects to a ful string for instence: 7070/toilets?wc=2&fee&change_table_child
+        // Creates full url, converts objects to a full string for instence: 7070/toilets?wc=2&fee&change_table_child
         const url = `http://localhost:7070/toilets?${queryParams.toString()}`;
 
         const res = await fetch(url, options);
@@ -139,11 +139,17 @@ document.addEventListener("DOMContentLoaded", async function () {
         const listContainer = document.getElementById("toa-list");
         listContainer.innerHTML = ""; 
 
+        // Filters data to only include what is being searched OR blank and include all data
+        const searchTerm = document.getElementById("toiletSearch")?.value.toLowerCase() || "";
+        const filtered = toilets.filter(t => 
+            t.name.toLowerCase().includes(searchTerm)
+        ); 
+
         // Sort list sort with name otherwise numbered with score highest to lowest
-        const sorted = [...toilets].sort((a, b) => {
-            if (sortWith === 'name') return a.name.localeCompare(b.name);
+        const sorted = [...filtered].sort((toiletA, toiletB) => {
+            if (sortWith === 'name') return toiletA.name.localeCompare(toiletB.name);
             // Sort by numver b - a to ensure the highest values appear at top
-            return b[sortWith] - a[sortWith];
+            return toiletB[sortWith] - toiletA[sortWith];
         });
 
         sorted.forEach(toilet => {
@@ -190,10 +196,9 @@ document.addEventListener("DOMContentLoaded", async function () {
             listContainer.appendChild(li);
         });
     }
-
+    // Handles matching slider with label for toilet amount
     const toiletSlider = document.getElementById("filterAmount");
     const sliderLabelValue = document.getElementById("toiletAmount");
-
     if (toiletSlider && sliderLabelValue) {
         // Updates number next to slider
         toiletSlider.addEventListener("input", function() {
@@ -204,9 +209,9 @@ document.addEventListener("DOMContentLoaded", async function () {
             getAllToilets();
         });
     }
+    // Handles matching slider with label for search range
     const rangeSlider = document.getElementById("rangeSlider");
     const rangerNumber = document.getElementById("rangeNumber");
-
     if (rangeSlider && rangerNumber) {
         // Updates number next to slider
         rangeSlider.addEventListener("input", function() {
@@ -265,15 +270,23 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     map.on('click', markerMapPlacement);
 
-    // The sort buttons 
-    const standardView = document.getElementById("sortName");
-    const sortWithPoints = document.getElementById("sortScore");
-    const sortWithDank = document.getElementById("sortDankness");
+    // The searchbar event listner only trigers if a value is input in html
+    const searchInput = document.getElementById("toiletSearch");
+    if (searchInput) {
+        searchInput.addEventListener("input", function() {
+            sidebarContent(); 
+        });
+    }
 
     // Filter event listners
     document.getElementById("filterTable")?.addEventListener("change", getAllToilets);
     document.getElementById("filterFree")?.addEventListener("change", getAllToilets);
     document.getElementById("filterAmount")?.addEventListener("input", getAllToilets);
+
+    // The sort buttons 
+    const standardView = document.getElementById("sortName");
+    const sortWithPoints = document.getElementById("sortScore");
+    const sortWithDank = document.getElementById("sortDankness");
     
     // Events for what sort button is clicked
     if (standardView) standardView.onclick = () => sidebarContent('name');
