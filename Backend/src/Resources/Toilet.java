@@ -13,6 +13,9 @@ public class Toilet {
     private List<Review> reviews;
     private String openingHours;
 
+
+    private Double distance;
+
     public Toilet(int id, String name, double lng, double lat, int change_table_child, String fee, int nbrWcs, List<Review> reviews, String openingHours) {
         this.id = id;
         this.name = name;
@@ -95,5 +98,14 @@ public class Toilet {
 
     public void setOpeningHours(String openingHours) {
         this.openingHours = openingHours;
+    }
+
+
+    public Double getDistance() {
+        return distance;
+    }
+
+    public void setDistance(Double distance) {
+        this.distance = distance;
     }
 }
