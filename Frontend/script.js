@@ -115,7 +115,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     // await fetch("http://localhost:7070/", options);
     // }
 
-    // Dict stores marker by name 
+    // Dict stores markers by id 
     const markerDict = {};
 
     // Function to move the map and open a popup when users select a toilet
@@ -188,7 +188,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
             // Connection to rateAToilet
             reviewButton.onclick = (event) => {
-                event.stopPropagation();
+                event.stopPropagation(); // Makes the review button the only place to click
                 rateAToilet(); 
             };
             li.appendChild(reviewButton);
