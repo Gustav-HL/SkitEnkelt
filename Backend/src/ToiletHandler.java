@@ -158,8 +158,6 @@ public class ToiletHandler {
         getToiletsAnew();
 
         Review incoming = ctx.bodyAsClass(Review.class);
-
-        // auto id: max + 1 (your placeholders => starts at 3)
         int maxId = 0;
         for (Review r : reviewsCollection.getReviews()) {
             if (r.getId() > maxId) maxId = r.getId();
@@ -198,6 +196,8 @@ public class ToiletHandler {
         return result;
     }
 
+    //HTTP requests kräver ctx och Toilet-objektet fetchar reviews med toiletId, så metoden övanpå var inkompatibel.
+    //Därför behöver vi en till metod som accepterar ctx som argument
     public void getReviewsByToiletIdFromContext(Context ctx) throws FileNotFoundException {
         getToiletsAnew();
 
@@ -208,9 +208,7 @@ public class ToiletHandler {
         }
 
         int toiletId = Integer.parseInt(tidParam);
-
         List<Review> reviews = getReviewsByToiletId(toiletId);
-
         ctx.json(reviews);
     }
 
