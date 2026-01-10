@@ -29,7 +29,7 @@ public class App {
 
                 })
                 //TODO- Vi hade kanske velat ha en scroll på hemsidan som ställer in range. Alternativt en egen flik, kanske hittar närmaste toaletterna till ens egen position.
-                .post("/", ctx -> toiletHandler.addReview(ctx))
+                .post("/", ctx -> toiletHandler.addReview(id, author))
                 .start(7070);
 
 

@@ -184,6 +184,8 @@ document.addEventListener("DOMContentLoaded", async function () {
         });
     }
 
+
+
     const toiletSlider = document.getElementById("filterAmount");
     const sliderLabelValue = document.getElementById("toiletAmount");
 

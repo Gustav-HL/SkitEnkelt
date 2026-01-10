@@ -6,6 +6,9 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -48,17 +51,29 @@ public class ToiletHandler {
         }
     }
 
-    public String postReviewAPI(String reviewsUrl, String reviewJson){
+    public String postReviewAPI(String reviewsUrl, String reviewJson) {
         try {
             HttpClient client = HttpClient.newHttpClient();
-            HttpRequest request = HttpRequest.newBuilder().uri(URI.create(reviewsUrl)).header("Accept", "application/json").POST().build();
-            return client.send(request, HttpResponse.BodyHandlers.ofString()).body();
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(reviewsUrl))
+                    .header("Accept", "application/json")
+                    .header("Content-Type", "application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString(reviewJson))
+                    .build();
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            int status = response.statusCode();
+            if (status < 200 || status >= 300) {
+                throw new RuntimeException("POST failed: " + status + " body=" + response.body());
+            }
+            return response.body();
         } catch (IOException e) {
             throw new RuntimeException(e);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
 
         }
+    }
 
 
     public void getAllToilets(Context ctx) throws FileNotFoundException {
@@ -137,9 +152,53 @@ public class ToiletHandler {
         ctx.json(toilets);
     }
 
-    public void addReview(Context ctx) {
+    public void addReview(int id, String author,
+                          String date, int toiletId, String toiletName, double rating, String description, String photo) {
+        String reviewJson = """
+    {
+      "id": "%s",
+      "author": "%s",
+      "date": "%s",
+      "toiletId": "%s",
+      "toiletName": "%s",
+      "rating": %s,
+      "description": "%s",
+      "photo": "%s"
+    }
+    """.formatted(
+                id,
+                escapeJson(author),
+                escapeJson(date),
+                toiletId,
+                escapeJson(toiletName),
+                rating,
+                escapeJson(description),
+                escapeJson(photo)
 
+        );
 
+        Path file = Path.of("reviews.json");
+
+        try {
+            Files.writeString(
+                    file,
+                    reviewJson + System.lineSeparator(),
+                    StandardOpenOption.CREATE,
+                    StandardOpenOption.APPEND
+            );
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    // Minimal JSON string escaping so quotes/newlines don't break JSON
+    private static String escapeJson(String s) {
+        if (s == null) return "";
+        return s.replace("\\", "\\\\")
+                .replace("\"", "\\\"")
+                .replace("\n", "\\n")
+                .replace("\r", "\\r");
     }
 
     public static List<Review> getReviewsForSelectedToilet(int toiletId) throws FileNotFoundException {
