@@ -182,16 +182,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                 <strong>${toilet.name}</strong>
                 <small>Poäng: ${toilet.score} | Sunkighet: ${toilet.dankness}</small>
             `;
-            const reviewButton = document.createElement("button");
-            reviewButton.textContent = 'Review';
-            reviewButton.className = "review-button";
 
-            // Connection to rateAToilet
-            reviewButton.onclick = (event) => {
-                event.stopPropagation(); // Makes the review button the only place to click
-                rateAToilet(); 
-            };
-            li.appendChild(reviewButton);
             li.onclick = () => selectToilet(toilet, li);
             listContainer.appendChild(li);
         });
