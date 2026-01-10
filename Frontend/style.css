@@ -24,7 +24,8 @@
 
 body {
     margin: 0;
-    font-family: Arial, sans-serif;
+    /* font-family: Arial, sans-serif; */
+    font-family: 'Roboto', sans-serif;
     display: flex;
     height: 100vh;
     overflow: hidden;
@@ -32,7 +33,9 @@ body {
 
 /* Sidopanel */
 #sidebar {
-    width: 400px;
+    width: 23%;
+    min-width: 350px !important;
+    flex-shrink: 0;
     /* background-color: rgb(138, 201, 180); */
     background-color: var(--bg-sidebar);
     /*background-image: url("shitter.jpg");*/
@@ -79,7 +82,7 @@ body {
     position: relative;
 }
 
-#suggestions {
+/* #suggestions {
     position: absolute;
     top: 100%;
     left: 0;
@@ -104,7 +107,7 @@ body {
 
 .suggestion-item:hover {
     background: #f3f3f3;
-}
+} */
 
 /*tar bort routeplanner*/
 .leaflet-routing-container {
@@ -119,7 +122,7 @@ body {
 
 .tab-buttons {
     flex: 1;
-    padding: 10px 5px;
+    padding: 10px 13px;
     border: none;
     background-color: var(--bg-tab-inactive);
     cursor: pointer;
@@ -269,4 +272,63 @@ body {
 #toiletSearch:focus {
     border-color: var(--primary-brown);
     box-shadow: 0 0 5px rgba(121, 85, 72, 0.2);
+}
+.filters {
+    width: 250px; 
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 15px;
+    align-items: left;
+
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.icon-filter {
+    cursor: pointer;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 10px;
+    transition: transform 0.2s;
+}
+
+.icon-filter i {
+    font-size: 2rem;
+    color: #ccc;
+    transition: color 0.3s, filter 0.3s;
+    filter: grayscale(100%);
+}
+
+.icon-filter span {
+    font-size: 0.7rem;
+    color: #888;
+}
+
+.icon-filter input:checked + i {
+    filter: grayscale(0%);
+}
+
+#filterTable:checked + i {
+    color: #d35e98; 
+}
+
+#markerFilter:checked + i {
+    color: #2965a5; 
+}
+
+.icon-filter:hover i {
+    transform: scale(1.1);
+}
+
+.tab-buttons i {
+    margin-right: 5px;
+}
+.list-header{
+    display: flex;
+    flex-direction: left;
+    margin-left: auto;
+    margin-right: 30px;
+    margin: 0 10;
 }

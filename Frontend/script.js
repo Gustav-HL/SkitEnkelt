@@ -137,6 +137,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     // Function to sort and show sidebar list
     function sidebarContent(sortWith = 'name') {
         const listContainer = document.getElementById("toa-list");
+        const countContainer = document.getElementById("toilet-count");
         listContainer.innerHTML = ""; 
 
         // Filters data to only include what is being searched OR blank and include all data
@@ -144,7 +145,10 @@ document.addEventListener("DOMContentLoaded", async function () {
         const filtered = toilets.filter(t => 
             t.name.toLowerCase().includes(searchTerm)
         ); 
-
+        // Updates number showing amount of toilets found
+        if (countContainer) {
+            countContainer.textContent = filtered.length;
+        }
         // Sort list sort with name otherwise numbered with score highest to lowest
         const sorted = [...filtered].sort((toiletA, toiletB) => {
             if (sortWith === 'name') return toiletA.name.localeCompare(toiletB.name);
@@ -188,7 +192,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             const li = document.createElement("li");
             li.className = "toilet_card";
             li.innerHTML = `
-                <strong>${toilet.name}</strong>
+                <strong>${toilet.name}</strong> |  <strong>${toilet.distance}</strong>
                 <small>Poäng: ${toilet.score} | Sunkighet: ${toilet.dankness}</small>
             `;
 
@@ -253,7 +257,9 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
 
     document.getElementById("markerFilter")?.addEventListener("change", function() {
+        const rangeContainer = document.getElementById("rangeSliderContainer");
         if (!this.checked) {
+            if (rangeContainer) rangeContainer.style.display = "none";
             if (userMarker) {
                 map.removeLayer(userMarker);
                 userMarker = null;
@@ -265,6 +271,10 @@ document.addEventListener("DOMContentLoaded", async function () {
             currentLat = null;
             currentLng = null;
             getAllToilets(); 
+        }
+        else {
+            // 3. Visa slidern om boxen blir ikryssad
+            if (rangeContainer) rangeContainer.style.display = "block";
         }
     });
 
