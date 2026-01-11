@@ -104,6 +104,7 @@ public class ToiletHandler {
                                 f.properties.fee,
                                 f.properties.wc,
                                 getReviewsByToiletId(f.properties.id),
+                                getRatingByToiletId(f.properties.id),
                                 f.properties.open_hours
                         );
                     } catch (FileNotFoundException e) {
@@ -206,17 +207,8 @@ public class ToiletHandler {
         ctx.json(reviews);
     }
 
-    //Called via /rating
-    public void getRatingByToiletIdFromContext(Context ctx) throws FileNotFoundException {
-        getToiletsAnew();
-        String tidParam = ctx.queryParam("toiletId");
-        if (tidParam == null) {
-            ctx.status(400).result("Missing query param: toiletId");
-            return;
-        }
-
-        int toiletId = Integer.parseInt(tidParam);
-        ctx.json(reviewsCollection.getAverageRating(toiletId));
+    public String getRatingByToiletId(int toiletId) throws FileNotFoundException {
+        return String.valueOf(reviewsCollection.getAverageRating(toiletId));
     }
 
 
