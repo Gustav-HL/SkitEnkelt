@@ -11,10 +11,11 @@ public class Toilet {
     private String fee;
     private int nbrWcs;
     private List<Review> reviews;
+    private double rating;
     private String openingHours;
     private int distance;
 
-    public Toilet(int id, String name, double lng, double lat, int change_table_child, String fee, int nbrWcs, List<Review> reviews, String openingHours) {
+    public Toilet(int id, String name, double lng, double lat, int change_table_child, String fee, int nbrWcs, List<Review> reviews, String rating, String openingHours) {
         this.id = id;
         this.name = name;
         this.lng = lng;
@@ -24,6 +25,7 @@ public class Toilet {
         this.nbrWcs = nbrWcs;
         this.reviews = reviews;
         this.openingHours = openingHours;
+        this.rating = Double.parseDouble(rating);
     }
 
     public void setId(int id) {
@@ -105,5 +107,13 @@ public class Toilet {
 
     public void setDistance(Double distance) {
         this.distance = (int) Math.round(distance);
+    }
+
+    public double getRating() {
+        return rating;
+    }
+
+    public void setRating(double rating) {
+        this.rating = rating;
     }
 }

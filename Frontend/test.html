@@ -1,10 +1,8 @@
 <!DOCTYPE html>
 <html lang="sv">
-
 <head>
     <meta charset="UTF-8">
     <title>Toalettkartan Malmö</title>
-
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
@@ -16,46 +14,13 @@
     <link rel="stylesheet" href="style.css">
     <!-- Font awsome icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 </head>
 
 <body>
-
-    <!-- <div id="sidebar">
-        <div id="sidebarButtons">
-            <table>
-                <tr>
-                    <td>
-                        <button type="button" id="testButton">
-                            GREATEST SHITS
-                        </button>
-                    </td>
-                    <td>SUNKY</td>
-                    <td>STANDARD</td>
-                </tr>
-            </table>
-        </div>
-
-        <h2>🚻 Toaletter i Malmö</h2>
-
-        <div class="filter-section">
-            <label for="address">Hitta din toalett:</label>
-            <input type="text" id="address" placeholder="Skriv in..." style="width: 100%;">
-            <button id="search-btn">Sök</button>
-
-        
-            <div id="suggestions"></div>
-        </div>
-
-        <h3>Resultat</h3>
-        <div id="toa-list"></div>
-    </div>
-
-    <div id="map"></div> -->
-
+    <div id="logotype">
+    <h1>Skit<span class="dots">...</span></h1>
+    <h1>ENKELT</h1>
+</div>
     <div id="sidebar">
         <div class="sort-tab-group">
             <button id="sortName" class="tab-buttons active">
@@ -71,50 +36,41 @@
         <div class="search-section">
             <input type="text" id="toiletSearch" placeholder="Sök efter toalett...">
         </div>
-
-        <!-- <details class="filter-dropdown">
-            <summary>Fler filter <i class="fa-solid fa-chevron-down"></i></summary> -->
-
             <div class="content">
                 <div class="filters">
                     <div class="icon-row">
                         <label class="icon-filter">
-                            <input type="checkbox" id="filterTable" hidden>
+                            <input type="checkbox" id="filterTable" autocomplete="off" hidden>
                             <i class="fa-solid fa-baby-carriage"></i>
                             <span>Skötbord</span>
                         </label>
                         <label class="icon-filter">
-                            <input type="checkbox" id="markerFilter" hidden>
+                            <input type="checkbox" id="markerFilter" autocomplete="off" hidden>
                             <i class="fa-solid fa-location-crosshairs"></i>
                             <span>Sök i område</span>
                         </label>
                         <label class="icon-filter">
-                            <input type="checkbox" id="routingToggle" hidden>
+                            <input type="checkbox" id="routingToggle" autocomplete="off" hidden>
                             <i class="fa-solid fa-route"></i>
                             <span>Vägbeskrivning</span>
                         </label>
                     </div>
                     <div class="slider-container" id="rangeSliderContainer" style="display: none;">
-                        <label for="rangeSlider">Sökradie runt markör:</label>
+                        <label for="rangeSlider">Sökradie runt markör: <span class="slider-value"><span id="rangeNumber">1500</span> m</span></label>
                         <div class="slider-group">
                             <input type="range" id="rangeSlider" min="100" max="8000" value="1500" step="100">
-                            <span class="slider-value"><span id="rangeNumber">1500</span> m</span>
                         </div>
                     </div>
 
                     <div class="slider-container">
-                        <label for="filterAmount">Antal tillgängliga toaletter:</label>
+                        <label for="filterAmount">Antal tillgängliga toaletter: <span class="slider-value"><span id="toiletAmount">1</span> st</span></label>
                         <div class="slider-group">
                             <input type="range" id="filterAmount" min="1" max="8" value="1" step="1">
-                            <span class="slider-value"><span id="toiletAmount">1</span> st</span>
                         </div>
                     </div>
                 </div>
+                <h3 id="toilet-amount">Antal Hittade Toaletter: <span id="toilet-count">0</span></h3>
             </div>
-        <!-- </details> -->
-        <div class="list-header">
-            <h3 id="toilet-amount">Antal Toaletter: <span id="toilet-count">0</span></h3>
-        </div>
         <ul id="toa-list"></ul>
     </div>
 

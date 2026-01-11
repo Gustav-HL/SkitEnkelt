@@ -104,6 +104,7 @@ public class ToiletHandler {
                                 f.properties.fee,
                                 f.properties.wc,
                                 getReviewsByToiletId(f.properties.id),
+                                getRatingByToiletId(f.properties.id),
                                 f.properties.open_hours
                         );
                     } catch (FileNotFoundException e) {
@@ -158,7 +159,6 @@ public class ToiletHandler {
 
         Gson gson = new Gson();
         String updated = gson.toJson(reviewsCollection);
-
         try {
             Files.writeString(
                     Path.of("./reviews.json"),
@@ -170,6 +170,9 @@ public class ToiletHandler {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+
+
 
         ctx.status(201).json(incoming);
     }
@@ -183,6 +186,8 @@ public class ToiletHandler {
                 result.add(review);
             }
         }
+
+        System.out.println(reviewsCollection.getAverageRating(toiletId));
         return result;
     }
 
@@ -200,6 +205,10 @@ public class ToiletHandler {
         int toiletId = Integer.parseInt(tidParam);
         List<Review> reviews = getReviewsByToiletId(toiletId);
         ctx.json(reviews);
+    }
+
+    public String getRatingByToiletId(int toiletId) throws FileNotFoundException {
+        return String.valueOf(reviewsCollection.getAverageRating(toiletId));
     }
 
 

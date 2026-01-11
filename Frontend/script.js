@@ -1,12 +1,16 @@
 // Event Listner to finish HTML load before script
 document.addEventListener("DOMContentLoaded", async function () {
     // Load and display map
-    const map = L.map('map').setView([55.605, 13.003], 13);
+    const map = L.map('map', {
+        zoomControl: false
+    }).setView([55.585, 12.953], 13);
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
         attribution: '&copy; OpenStreetMap'
     }).addTo(map);
-
+    L.control.zoom({
+        position: 'bottomright'
+    }).addTo(map);
 
     let userMarker;
     let currentLat = null;
@@ -91,54 +95,54 @@ document.addEventListener("DOMContentLoaded", async function () {
         const form = wrap.querySelector(".popup-review-form");
         const listEl = wrap.querySelector(".popup-review-list");
         const statusEl = wrap.querySelector(".review-status");
-                // --- STAR & POOP PICKERS ---
+        // --- STAR & POOP PICKERS ---
         const starPicker = wrap.querySelector(".star-picker");
         const poopPicker = wrap.querySelector(".poop-picker");
         const ratingInput = wrap.querySelector(".review-rating"); // hidden
         const poopInput = wrap.querySelector(".review-poop");     // hidden
 
         function paintStars(value) {
-        const stars = starPicker.querySelectorAll(".star");
-        stars.forEach(star => {
-            const v = Number(star.dataset.value);
-            star.classList.toggle("active", v <= value);
-            star.setAttribute("aria-checked", v === value ? "true" : "false");
-        });
+            const stars = starPicker.querySelectorAll(".star");
+            stars.forEach(star => {
+                const v = Number(star.dataset.value);
+                star.classList.toggle("active", v <= value);
+                star.setAttribute("aria-checked", v === value ? "true" : "false");
+            });
         }
 
         function paintPoops(value) {
-        const poops = poopPicker.querySelectorAll(".poop");
-        poops.forEach(p => {
-            const v = Number(p.dataset.value);
-            p.classList.toggle("active", v <= value);
-            p.setAttribute("aria-checked", v === value ? "true" : "false");
-        });
+            const poops = poopPicker.querySelectorAll(".poop");
+            poops.forEach(p => {
+                const v = Number(p.dataset.value);
+                p.classList.toggle("active", v <= value);
+                p.setAttribute("aria-checked", v === value ? "true" : "false");
+            });
         }
 
         if (starPicker && ratingInput) {
-        starPicker.addEventListener("click", (ev) => {
-            const target = ev.target.closest(".star");
-            if (!target) return;
-            const val = Number(target.dataset.value);
-            ratingInput.value = String(val);
-            paintStars(val);
-        });
+            starPicker.addEventListener("click", (ev) => {
+                const target = ev.target.closest(".star");
+                if (!target) return;
+                const val = Number(target.dataset.value);
+                ratingInput.value = String(val);
+                paintStars(val);
+            });
 
-        // default
-        paintStars(Number(ratingInput.value || 0));
+            // default
+            paintStars(Number(ratingInput.value || 0));
         }
 
         if (poopPicker && poopInput) {
-        poopPicker.addEventListener("click", (ev) => {
-            const target = ev.target.closest(".poop");
-            if (!target) return;
-            const val = Number(target.dataset.value);
-            poopInput.value = String(val);
-            paintPoops(val);
-        });
+            poopPicker.addEventListener("click", (ev) => {
+                const target = ev.target.closest(".poop");
+                if (!target) return;
+                const val = Number(target.dataset.value);
+                poopInput.value = String(val);
+                paintPoops(val);
+            });
 
-        // default
-        paintPoops(Number(poopInput.value || 0));
+            // default
+            paintPoops(Number(poopInput.value || 0));
         }
 
         // 1) Ladda och visa reviews direkt när popupen öppnas
@@ -158,17 +162,17 @@ document.addEventListener("DOMContentLoaded", async function () {
 
             const author = wrap.querySelector(".review-author").value.trim();
             const rating = Number(wrap.querySelector(".review-rating").value);
+            const poop = Number(wrap.querySelector(".review-poop").value); // Hämtar från dolt fält
             const description = wrap.querySelector(".review-description").value.trim();
 
             if (!rating || rating < 1) {
-            statusEl.textContent = "Välj ett stjärnbetyg först ⭐";
-            return;
+                statusEl.textContent = "Välj ett stjärnbetyg först ⭐";
+                return;
             }
             if (!poop || poop < 1) {
-            statusEl.textContent = "Välj hur sunkigt det är 💩";
-            return;
+                statusEl.textContent = "Välj hur sunkigt det är 💩";
+                return;
             }
-
 
             try {
                 const res = await fetch("http://localhost:7070/reviews", {
@@ -179,6 +183,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                         toiletName,
                         author,
                         rating,
+                        poop,
                         description,
                         photo: ""
                     })
@@ -197,8 +202,8 @@ document.addEventListener("DOMContentLoaded", async function () {
                 console.error(err);
                 statusEl.textContent = "Något gick fel när review skulle sparas 💩 ";
             }
-        };
-    });
+        }; // Stänger form.onsubmit
+    }); // Stänger map.on("popupopen")
 
     // Hjälpfunktion: hämta & rendera reviews
     async function loadReviews(toiletId, listEl) {
@@ -214,15 +219,15 @@ document.addEventListener("DOMContentLoaded", async function () {
             }
 
             listEl.innerHTML = reviews.map(r => `
-      <div class="review-item" style="margin-bottom:8px;">
-        <div><b>${r.author}</b> • ${r.date} •  ${r.rating}</div>
-        <div>${r.description}</div>
-      </div>
-    `).join("");
+<div class="review-item" style="margin-bottom:8px;">
+            <div><b>${r.author}</b> • ${r.date} •  ${r.rating}</div>
+            <div>${r.description}</div>
+        </div>
+        `).join("");
 
         } catch (err) {
             console.error(err);
-            listEl.textContent = "Kunde inte ladda reviews.";
+            listEl.textContent = "Kunde inte ladda reviews :(";
         }
     }
 
@@ -289,12 +294,23 @@ document.addEventListener("DOMContentLoaded", async function () {
                 if (sortWith === 'name') {
                     return toiletA.name.localeCompare(toiletB.name);
                 }
-                const valA = parseFloat(toiletA[sortWith]);
-                const valB = parseFloat(toiletB[sortWith]);
-                if (sortWith === 'distance') {
-                    return (valA || 0) - (valB || 0);
+
+                if (sortWith === 'score') {
+                    const valA = parseFloat(toiletA.rating) || 0;
+                    const valB = parseFloat(toiletB.rating) || 0;
+                    return valB - valA;
                 }
-                return (valB || 0) - (valA || 0);
+
+                if (sortWith === 'distance') {
+                    const distA = parseFloat(toiletA.distance) || 0;
+                    const distB = parseFloat(toiletB.distance) || 0;
+                    return distA - distB;
+                }
+                if (sortWith === 'dankness') {
+                    const valA = parseFloat(toiletA[sortWith]) || 0;
+                    const valB = parseFloat(toiletB[sortWith]) || 0;
+                    return valB - valA;
+                }
             });
 
         sorted.forEach(toilet => {
@@ -350,7 +366,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                     <div class="popup-review-list" style="margin-top:10px;"></div>
                     </div>
                 </div>`;
-            
+
             // Custom marker on map
             const brownIcon = L.divIcon({
                 className: 'marker-box',
@@ -369,11 +385,20 @@ document.addEventListener("DOMContentLoaded", async function () {
             // HTML for the list
             const li = document.createElement("li");
             li.className = "toilet_card";
+
+            // Convert rating to one decimal
+            const displayRating = toilet.rating > 0 ? toilet.rating.toFixed(1) : "Inga betyg";
+            const reviewCount = toilet.reviews ? toilet.reviews.length : 0;
+
             li.innerHTML = `
                 <div>
-                <h4>${toilet.name}</h4> |  <h4>${toilet.distance} m</h4>
+                    <h4>${toilet.name}</h4> | <h4>${toilet.distance} m</h4>
                 </div>
-                <small>Poäng: ${toilet.score} | Sunkighet: ${toilet.dankness}</small>
+                <small>
+                    </i> ${displayRating} | 
+                    Sunkighet: ${toilet.dankness}
+                    (${reviewCount} reviews)
+                </small>
             `;
 
             li.onclick = () => selectToilet(toilet, li);
