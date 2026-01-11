@@ -1,20 +1,20 @@
 :root {
     /* Ändra färger här */
     /* primära Highlight färgen */
-    --primary-brown: #795548;    
-    /*  för text highlightning*/  
-    --primary-dark: #5d4037;    
-    /*  för hovers och boarders */  
-    --primary-light: #d7ccc8;      
-    
+    --primary-brown: #795548;
+    /*  för text highlightning*/
+    --primary-dark: #5d4037;
+    /*  för hovers och boarders */
+    --primary-light: #d7ccc8;
+
     /* Backgrounds */
     /* Sidebar  bakgrund */
-    --bg-sidebar: #f2ede9;  
-    /* Kort bakgrund för listan */       
-    --bg-card: #ffffff;            
-    --bg-card-active: #fdfaf7;    
+    --bg-sidebar: #f2ede9;
+    /* Kort bakgrund för listan */
+    --bg-card: #ffffff;
+    --bg-card-active: #fdfaf7;
     --bg-tab-inactive: #f0f0f0;
-    
+
     /* Greys and Borders */
     --border-light: #ddd;
     --text-main: #333333;
@@ -29,9 +29,11 @@ body {
     height: 100vh;
     overflow: hidden;
 }
-#toilet-amount{
+
+#toilet-amount {
     margin: 10px 0 0 0;
 }
+
 /* Sidopanel */
 #sidebar {
     width: 23%;
@@ -40,8 +42,8 @@ body {
     /* background-color: rgb(138, 201, 180); */
     background-color: var(--bg-sidebar);
     /*background-image: url("shitter.jpg");*/
-    background-repeat: no-repeat; 
-    background-position: bottom;  
+    background-repeat: no-repeat;
+    background-position: bottom;
     background-size: contain;
     border-right: 1px solid #ddd;
     /* padding: 15px; */
@@ -49,10 +51,9 @@ body {
     border-right: solid grey 5px;
     display: flex;
     flex-direction: column;
-    height: 100vh; 
-    overflow-y: auto; 
+    height: 100vh;
+    overflow-y: auto;
 }
-
 
 #sidebarButtons table {
     width: 100%;
@@ -67,7 +68,7 @@ body {
     font-weight: bold;
     cursor: pointer;
     font-size: large;
-    font-family:Verdana, Geneva, Tahoma, sans-serif;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
     color: white;
 }
 
@@ -83,38 +84,10 @@ body {
     position: relative;
 }
 
-/* #suggestions {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
-
-    background: white;
-    border: 1px solid #ccc;
-    border-top: none;
-
-    max-height: 200px;
-    overflow-y: auto;
-    display: none;
-
-    z-index: 99999;
-}
-
-.suggestion-item {
-    padding: 8px;
-    border-bottom: 1px solid #eee;
-    cursor: pointer;
-}
-
-.suggestion-item:hover {
-    background: #f3f3f3;
-} */
-
 /*tar bort routeplanner*/
 .leaflet-routing-container {
     display: none !important;
 }
-
 
 .sort-tab-group {
     display: flex;
@@ -123,22 +96,22 @@ body {
 
 .tab-buttons {
     flex: 1;
-    padding: 10px 8px; 
+    padding: 10px 8px;
     border: none;
     background-color: var(--bg-tab-inactive);
     cursor: pointer;
     font-size: 0.9rem;
     transition: background 0.2s;
     border-right: 1px solid var(--border-light);
-    white-space: nowrap;       
+    white-space: nowrap;
 }
+
 /* The active pressed button with the brown underscore */
 .tab-buttons.active {
     color: var(--primary-dark);
     font-weight: bold;
-    background-color: var(--bg-card-active); 
-    
-    border-bottom: 3px solid var(--primary-brown); 
+    background-color: var(--bg-card-active);
+    border-bottom: 3px solid var(--primary-brown);
 }
 
 .tab-buttons:hover:not(.active) {
@@ -152,12 +125,13 @@ body {
     padding: 15px;
     margin-bottom: 10px;
     background-color: var(--bg-card);
-    border-radius: 8px;  
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05); 
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     transition: all 0.2s ease;
     border: 1px solid transparent;
 }
-.toilet_card h4{
+
+.toilet_card h4 {
     display: inline;
 }
 
@@ -169,24 +143,24 @@ body {
 }
 
 .toilet_card small {
-    color: #333333; 
+    color: #333333;
     transition: color 0.2s ease;
 }
 
 /* Hover and Selected State */
-.toilet_card:hover, 
+.toilet_card:hover,
 .toilet_card.selected {
     background-color: #fafafa;
-    border-color: var(--primary-brown); 
+    border-color: var(--primary-brown);
     transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.toilet_card:hover strong, 
+.toilet_card:hover strong,
 .toilet_card.selected strong,
 .toilet_card:hover small,
 .toilet_card.selected small {
-    color: var(--primary-brown); 
+    color: var(--primary-brown);
 }
 
 .toilet-popup {
@@ -198,7 +172,7 @@ body {
 .popup-title {
     display: block;
     font-size: 1.2rem;
-    color: #000000; 
+    color: #000000;
     border-bottom: 1px solid #d7ccc8;
     margin-bottom: 8px;
     padding-bottom: 4px;
@@ -209,11 +183,9 @@ body {
     font-size: 0.9rem;
 }
 
-
 /* Leaflet Style Overrides */
-
 .leaflet-popup-content-wrapper {
-    background-color: var(--bg-card-active); 
+    background-color: var(--bg-card-active);
     border-radius: 8px;
     border: 1px solid var(--primary-brown);
 }
@@ -227,7 +199,6 @@ body {
     padding: 5px !important;
 }
 
-
 .marker-box {
     display: flex;
     justify-content: center;
@@ -237,18 +208,18 @@ body {
     width: 30px;
     height: 30px;
     border-radius: 50% 50% 50% 0;
-    background: var(--primary-brown); 
+    background: var(--primary-brown);
     position: absolute;
     transform: rotate(-45deg);
     left: 50%;
     top: 50%;
     margin: -15px 0 0 -15px;
     border: 2px solid #ffffff;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
 }
 
 .marker-icon::after {
-    content: '';
+    content: "";
     width: 12px;
     height: 12px;
     margin: 9px 0 0 9px;
@@ -278,62 +249,63 @@ body {
     box-shadow: 0 0 5px rgba(121, 85, 72, 0.2);
 }
 
-.star-picker, .poop-picker {
-  display: flex;
-  gap: 6px;
-  margin-top: 4px;
+.star-picker,
+.poop-picker {
+    display: flex;
+    gap: 6px;
+    margin-top: 4px;
 }
 
-.star, .poop {
-  cursor: pointer;
-  user-select: none;
-  font-size: 20px;
-  opacity: 0.35;
+.star,
+.poop {
+    cursor: pointer;
+    user-select: none;
+    font-size: 20px;
+    opacity: 0.35;
 }
 
-.star.active, .poop.active {
-  opacity: 1;
+.star.active,
+.poop.active {
+    opacity: 1;
+}
+
+/* Filters/layout (previously nested, now valid CSS) */
 .filters {
-    width: 290px; 
+    width: 290px;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     gap: 15px;
-    align-items: left;
-
+    align-items: flex-start; /* was invalid: left */
     margin-left: auto;
     margin-right: auto;
+
+    /* merged from the duplicate later block */
+    min-height: 0;
+    padding: 15px 10px;
 }
+
 .icon-row {
     display: flex;
     width: 100%;
-    justify-content: space-between; /* Fördelar boxarna jämnt */
-    gap: 10px; /* Jämnt mellanrum mellan de tre boxarna */
+    justify-content: space-between;
+    gap: 10px;
 }
 
 .icon-filter {
-    /* Magi-raden: grow=1, shrink=1, basis=0 */
-    flex: 1 1 0; 
-    min-width: 0; /* Tillåter flex-basis att fungera korrekt */
-    
+    flex: 1 1 0;
+    min-width: 0;
+
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    
+
     padding: 10px 5px;
-    background: var(--bg-card); /* Eller din önskade bakgrund */
+    background: var(--bg-card);
     border-radius: 8px;
     cursor: pointer;
     transition: transform 0.2s;
-}
-
-.icon-filter span {
-    font-size: 0.65rem; /* Lite mindre för att garantera plats */
-    text-align: center;
-    width: 100%;
-    white-space: nowrap;
-    margin-top: 6px;
 }
 
 .icon-filter i {
@@ -344,6 +316,10 @@ body {
 .icon-filter span {
     font-size: 0.7rem;
     color: #888;
+    text-align: center;
+    width: 100%;
+    white-space: nowrap;
+    margin-top: 6px;
 }
 
 .icon-filter input:checked + i {
@@ -351,17 +327,16 @@ body {
 }
 
 #filterTable:checked + i {
-    color: #d35e98; 
+    color: #d35e98;
 }
 
 #markerFilter:checked + i {
-    color: #2965a5; 
+    color: #2965a5;
 }
 
 #routingToggle:checked + i {
-    color: #2965a5; 
+    color: #2965a5;
 }
-
 
 .icon-filter:hover i {
     transform: scale(1.1);
@@ -370,16 +345,17 @@ body {
 .tab-buttons i {
     margin-right: 5px;
 }
-.list-header{
+
+.list-header {
     display: flex;
-    flex-direction: left;
+    flex-direction: row; /* was invalid: left */
     margin-left: auto;
     margin-right: 30px;
-    margin: 0 10;
+    margin: 0 10px; /* was missing unit */
 }
 
 .filter-dropdown {
-    margin:  0;
+    margin: 0;
     border-bottom: 1px solid var(--border-light);
     padding-bottom: 10px;
 }
@@ -410,13 +386,8 @@ summary::-webkit-details-marker {
 }
 
 .filter-dropdown[open] .dropdown-content {
-    grid-template-rows: 1fr; 
+    grid-template-rows: 1fr;
     opacity: 1;
-}
-
-.filters {
-    min-height: 0;
-    padding: 15px 10px;
 }
 
 summary i {

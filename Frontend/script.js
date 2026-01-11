@@ -55,6 +55,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         for (let key in markerDict) delete markerDict[key];
         console.log(data);
         sidebarContent();
+
     }
 
     let toilets = [];
@@ -250,6 +251,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         if (routingEnabled) {
             routeTo(currentLat, currentLng, toilet.lat, toilet.lng);
         }
+
     }
 
 
@@ -276,12 +278,6 @@ document.addEventListener("DOMContentLoaded", async function () {
             t.name.toLowerCase().includes(searchTerm)
         );
 
-        // Sort list sort with name otherwise numbered with score highest to lowest
-        const sorted = [...filtered].sort((toiletA, toiletB) => {
-            if (sortWith === 'name') return toiletA.name.localeCompare(toiletB.name);
-            // Sort by numver b - a to ensure the highest values appear at top
-            return toiletB[sortWith] - toiletA[sortWith];
-        });
         // Updates number showing amount of toilets found
         if (countContainer) {
             countContainer.textContent = filtered.length;
