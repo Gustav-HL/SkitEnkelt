@@ -278,7 +278,7 @@ body {
     box-shadow: 0 0 5px rgba(121, 85, 72, 0.2);
 }
 .filters {
-    width: 250px; 
+    width: 290px; 
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -288,21 +288,41 @@ body {
     margin-left: auto;
     margin-right: auto;
 }
+.icon-row {
+    display: flex;
+    width: 100%;
+    justify-content: space-between; /* Fördelar boxarna jämnt */
+    gap: 10px; /* Jämnt mellanrum mellan de tre boxarna */
+}
 
 .icon-filter {
-    cursor: pointer;
-    display: inline-flex;
+    /* Magi-raden: grow=1, shrink=1, basis=0 */
+    flex: 1 1 0; 
+    min-width: 0; /* Tillåter flex-basis att fungera korrekt */
+    
+    display: flex;
     flex-direction: column;
     align-items: center;
-    margin: 10px;
+    justify-content: center;
+    
+    padding: 10px 5px;
+    background: var(--bg-card); /* Eller din önskade bakgrund */
+    border-radius: 8px;
+    cursor: pointer;
     transition: transform 0.2s;
 }
 
+.icon-filter span {
+    font-size: 0.65rem; /* Lite mindre för att garantera plats */
+    text-align: center;
+    width: 100%;
+    white-space: nowrap;
+    margin-top: 6px;
+}
+
 .icon-filter i {
-    font-size: 2rem;
-    color: #ccc;
-    transition: color 0.3s, filter 0.3s;
-    filter: grayscale(100%);
+    font-size: 1.4rem;
+    margin-bottom: 2px;
 }
 
 .icon-filter span {
@@ -321,6 +341,11 @@ body {
 #markerFilter:checked + i {
     color: #2965a5; 
 }
+
+#routingToggle:checked + i {
+    color: #2965a5; 
+}
+
 
 .icon-filter:hover i {
     transform: scale(1.1);
@@ -343,7 +368,6 @@ body {
     padding-bottom: 10px;
 }
 
-/* Ta bort standard-pilen */
 summary {
     list-style: none;
     display: flex;
@@ -361,28 +385,24 @@ summary::-webkit-details-marker {
     display: none;
 }
 
-/* Behållaren som hanterar animationen */
 .dropdown-content {
     display: grid;
-    grid-template-rows: 0fr; /* Startar stängd */
+    grid-template-rows: 0fr;
     transition: grid-template-rows 0.3s ease-out, opacity 0.2s;
     opacity: 0;
     overflow: hidden;
 }
 
-/* När användaren klickar på details */
 .filter-dropdown[open] .dropdown-content {
-    grid-template-rows: 1fr; /* Panorerar ut */
+    grid-template-rows: 1fr; 
     opacity: 1;
 }
 
-/* Den inre behållaren måste ha min-height: 0 för att grid-tricket ska fungera */
 .filters {
     min-height: 0;
     padding: 15px 10px;
 }
 
-/* Bonus: Rotera pil-ikonen snyggt */
 summary i {
     transition: transform 0.3s ease;
 }

@@ -97,7 +97,6 @@ document.addEventListener("DOMContentLoaded", async function () {
         for (let key in markerDict) delete markerDict[key];
         console.log(data);
         sidebarContent();
-
     }
 
     let toilets = [];
@@ -143,7 +142,6 @@ document.addEventListener("DOMContentLoaded", async function () {
         if (routingEnabled) {
             routeTo(currentLat, currentLng, toilet.lat, toilet.lng);
         }
-        
     }
 
     function routeTo(fromLat, fromLng, toLat, toLng) {
@@ -154,7 +152,6 @@ document.addEventListener("DOMContentLoaded", async function () {
             ]
         }).addTo(map);
         routingActive = true;
-
     }
 
     // Function to sort and show sidebar list
@@ -203,7 +200,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                         Review 
                     </button>
                 </div>`;
-
+            
             // Custom marker on map
             const brownIcon = L.divIcon({
                 className: 'marker-box',
@@ -260,11 +257,6 @@ document.addEventListener("DOMContentLoaded", async function () {
             getAllToilets();
         });
     }
-
-
-
-
-
 
     function markerMapPlacement(event) {
         const markerFilter = document.getElementById("markerFilter")?.checked;
