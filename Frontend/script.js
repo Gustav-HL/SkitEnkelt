@@ -76,95 +76,95 @@ document.addEventListener("DOMContentLoaded", async function () {
     // Dict stores markers by id 
     const markerDict = {};
 
-        map.on("popupopen", async (e) => {
-  const root = e.popup.getElement();
-  if (!root) return;
+    map.on("popupopen", async (e) => {
+        const root = e.popup.getElement();
+        if (!root) return;
 
-  const wrap = root.querySelector(".popup-reviews");
-  if (!wrap) return;
+        const wrap = root.querySelector(".popup-reviews");
+        if (!wrap) return;
 
-  const toiletId = wrap.dataset.toiletId;
-  const toiletName = wrap.dataset.toiletName;
+        const toiletId = wrap.dataset.toiletId;
+        const toiletName = wrap.dataset.toiletName;
 
-  const toggleBtn = wrap.querySelector(".popup-review-toggle");
-  const form = wrap.querySelector(".popup-review-form");
-  const listEl = wrap.querySelector(".popup-review-list");
-  const statusEl = wrap.querySelector(".review-status");
+        const toggleBtn = wrap.querySelector(".popup-review-toggle");
+        const form = wrap.querySelector(".popup-review-form");
+        const listEl = wrap.querySelector(".popup-review-list");
+        const statusEl = wrap.querySelector(".review-status");
 
-  // 1) Ladda och visa reviews direkt när popupen öppnas
-  await loadReviews(toiletId, listEl);
+        // 1) Ladda och visa reviews direkt när popupen öppnas
+        await loadReviews(toiletId, listEl);
 
-  // 2) Toggle: visa/dölj formulär
-  toggleBtn.onclick = (ev) => {
-    ev.preventDefault();
-    form.style.display = (form.style.display === "none") ? "block" : "none";
-    statusEl.textContent = "";
-  };
+        // 2) Toggle: visa/dölj formulär
+        toggleBtn.onclick = (ev) => {
+            ev.preventDefault();
+            form.style.display = (form.style.display === "none") ? "block" : "none";
+            statusEl.textContent = "";
+        };
 
-  // 3) Skicka review
-  form.onsubmit = async (ev) => {
-    ev.preventDefault();
-    statusEl.textContent = "Skickar...";
+        // 3) Skicka review
+        form.onsubmit = async (ev) => {
+            ev.preventDefault();
+            statusEl.textContent = "Skickar...";
 
-    const author = wrap.querySelector(".review-author").value.trim();
-    const rating = Number(wrap.querySelector(".review-rating").value);
-    const description = wrap.querySelector(".review-description").value.trim();
+            const author = wrap.querySelector(".review-author").value.trim();
+            const rating = Number(wrap.querySelector(".review-rating").value);
+            const description = wrap.querySelector(".review-description").value.trim();
 
-    try {
-      const res = await fetch("http://localhost:7070/reviews", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          toiletId: Number(toiletId),
-          toiletName,
-          author,
-          rating,
-          description,
-          photo: ""
-        })
-      });
+            try {
+                const res = await fetch("http://localhost:7070/reviews", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        toiletId: Number(toiletId),
+                        toiletName,
+                        author,
+                        rating,
+                        description,
+                        photo: ""
+                    })
+                });
 
-      if (!res.ok) throw new Error("Backend svarade inte OK");
+                if (!res.ok) throw new Error("Backend svarade inte OK");
 
-      statusEl.textContent = "Tack! Review sparad ";
-      form.reset();
-      form.style.display = "none";
+                statusEl.textContent = "Tack! Review sparad ";
+                form.reset();
+                form.style.display = "none";
 
-      // Ladda om listan i popupen
-      await loadReviews(toiletId, listEl);
+                // Ladda om listan i popupen
+                await loadReviews(toiletId, listEl);
 
-    } catch (err) {
-      console.error(err);
-      statusEl.textContent = "Något gick fel när review skulle sparas 💩 ";
+            } catch (err) {
+                console.error(err);
+                statusEl.textContent = "Något gick fel när review skulle sparas 💩 ";
+            }
+        };
+    });
+
+    // Hjälpfunktion: hämta & rendera reviews
+    async function loadReviews(toiletId, listEl) {
+        listEl.textContent = "Laddar reviews...";
+
+        try {
+            const res = await fetch(`http://localhost:7070/reviews?toiletId=${encodeURIComponent(toiletId)}`);
+            const reviews = await res.json();
+
+            if (!Array.isArray(reviews) || reviews.length === 0) {
+                listEl.textContent = "Inga reviews än.";
+                return;
+            }
+
+            listEl.innerHTML = reviews.map(r => `
+        <div class="review-item" style="margin-bottom:8px;">
+            <div><b>${r.author}</b> • ${r.date} •  ${r.rating}</div>
+            <div>${r.description}</div>
+        </div>
+        `).join("");
+
+        } catch (err) {
+            console.error(err);
+            listEl.textContent = "Kunde inte ladda reviews :(";
+        }
     }
-  };
-});
-
-// Hjälpfunktion: hämta & rendera reviews
-async function loadReviews(toiletId, listEl) {
-  listEl.textContent = "Laddar reviews...";
-
-  try {
-    const res = await fetch(`http://localhost:7070/reviews?toiletId=${encodeURIComponent(toiletId)}`);
-    const reviews = await res.json();
-
-    if (!Array.isArray(reviews) || reviews.length === 0) {
-      listEl.textContent = "Inga reviews än.";
-      return;
-    }
-
-    listEl.innerHTML = reviews.map(r => `
-      <div class="review-item" style="margin-bottom:8px;">
-        <div><b>${r.author}</b> • ${r.date} •  ${r.rating}</div>
-        <div>${r.description}</div>
-      </div>
-    `).join("");
-
-  } catch (err) {
-    console.error(err);
-    listEl.textContent = "Kunde inte ladda reviews.";
-  }
-}
 
 
     // Function to move the map and open a popup when users select a toilet
@@ -227,12 +227,23 @@ async function loadReviews(toiletId, listEl) {
                 if (sortWith === 'name') {
                     return toiletA.name.localeCompare(toiletB.name);
                 }
-                const valA = parseFloat(toiletA[sortWith]);
-                const valB = parseFloat(toiletB[sortWith]);
-                if (sortWith === 'distance') {
-                    return (valA || 0) - (valB || 0);
+
+                if (sortWith === 'score') {
+                    const valA = parseFloat(toiletA.rating) || 0;
+                    const valB = parseFloat(toiletB.rating) || 0;
+                    return valB - valA; 
                 }
-                return (valB || 0) - (valA || 0);
+
+                if (sortWith === 'distance') {
+                    const distA = parseFloat(toiletA.distance) || 0;
+                    const distB = parseFloat(toiletB.distance) || 0;
+                    return distA - distB; 
+                }
+                if (sortWith === 'dankness') {
+                    const valA = parseFloat(toiletA[sortWith]) || 0;
+                    const valB = parseFloat(toiletB[sortWith]) || 0;
+                    return valB - valA;
+                }
             });
 
         sorted.forEach(toilet => {
@@ -263,7 +274,7 @@ async function loadReviews(toiletId, listEl) {
                     <div class="popup-review-list" style="margin-top:10px;"></div>
                     </div>
                 </div>`;
-            
+
             // Custom marker on map
             const brownIcon = L.divIcon({
                 className: 'marker-box',
@@ -282,11 +293,20 @@ async function loadReviews(toiletId, listEl) {
             // HTML for the list
             const li = document.createElement("li");
             li.className = "toilet_card";
+
+            // Convert rating to one decimal
+            const displayRating = toilet.rating > 0 ? toilet.rating.toFixed(1) : "Inga betyg";
+            const reviewCount = toilet.reviews ? toilet.reviews.length : 0;
+
             li.innerHTML = `
                 <div>
-                <h4>${toilet.name}</h4> |  <h4>${toilet.distance} m</h4>
+                    <h4>${toilet.name}</h4> | <h4>${toilet.distance} m</h4>
                 </div>
-                <small>Poäng: ${toilet.score} | Sunkighet: ${toilet.dankness}</small>
+                <small>
+                    </i> ${displayRating} | 
+                    Sunkighet: ${toilet.dankness}
+                    (${reviewCount} reviews)
+                </small>
             `;
 
             li.onclick = () => selectToilet(toilet, li);
