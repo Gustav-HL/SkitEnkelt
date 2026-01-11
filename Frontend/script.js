@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         maxZoom: 19,
         attribution: '&copy; OpenStreetMap'
     }).addTo(map);
-    
+
     // TOALETT-DATABAS, ska kompletteras med getmetoder från vårt API
     // const toilets = [
     //         {
@@ -50,7 +50,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     //     L.marker([t.lat, t.lng]).addTo(map).bindPopup(t.id);
     // });
 
-    let userMarker; 
+    let userMarker;
     let currentLat = null;
     let currentLng = null;
     let rangeArea;
@@ -68,7 +68,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             }
         };
         let queryParams = new URLSearchParams();
-        
+
         // Back end filter queries
         if (hasChaningTable) queryParams.append("change_table_child", "1");
         if (freeEntry) queryParams.append("fee", "true");
@@ -79,7 +79,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             queryParams.append("lat", currentLat);
             queryParams.append("lon", currentLng);
             queryParams.append("range", rangeSlider);
-            console.log( currentLat, currentLng, rangeSlider);
+            console.log(currentLat, currentLng, rangeSlider);
         } else {
             console.log("start/error");
         }
@@ -88,20 +88,20 @@ document.addEventListener("DOMContentLoaded", async function () {
 
         const res = await fetch(url, options);
         const data = await res.json();
-        
+
         toilets = data;
 
         // Clear old markers so theres no overlap
         Object.values(markerDict).forEach(marker => map.removeLayer(marker));
         for (let key in markerDict) delete markerDict[key];
         console.log(data);
-        sidebarContent(); 
+        sidebarContent();
 
     }
 
     let toilets = [];
     // Fetch Data from backend
-   
+
     // async function rateAToilet() {
 
     // const options = {
@@ -118,95 +118,154 @@ document.addEventListener("DOMContentLoaded", async function () {
     // Dict stores markers by id 
     const markerDict = {};
 
-        map.on("popupopen", async (e) => {
-  const root = e.popup.getElement();
-  if (!root) return;
+    map.on("popupopen", async (e) => {
+        const root = e.popup.getElement();
+        if (!root) return;
 
-  const wrap = root.querySelector(".popup-reviews");
-  if (!wrap) return;
+        const wrap = root.querySelector(".popup-reviews");
+        if (!wrap) return;
 
-  const toiletId = wrap.dataset.toiletId;
-  const toiletName = wrap.dataset.toiletName;
+        const toiletId = wrap.dataset.toiletId;
+        const toiletName = wrap.dataset.toiletName;
 
-  const toggleBtn = wrap.querySelector(".popup-review-toggle");
-  const form = wrap.querySelector(".popup-review-form");
-  const listEl = wrap.querySelector(".popup-review-list");
-  const statusEl = wrap.querySelector(".review-status");
+        const toggleBtn = wrap.querySelector(".popup-review-toggle");
+        const form = wrap.querySelector(".popup-review-form");
+        const listEl = wrap.querySelector(".popup-review-list");
+        const statusEl = wrap.querySelector(".review-status");
+                // --- STAR & POOP PICKERS ---
+        const starPicker = wrap.querySelector(".star-picker");
+        const poopPicker = wrap.querySelector(".poop-picker");
+        const ratingInput = wrap.querySelector(".review-rating"); // hidden
+        const poopInput = wrap.querySelector(".review-poop");     // hidden
 
-  // 1) Ladda och visa reviews direkt när popupen öppnas
-  await loadReviews(toiletId, listEl);
+        function paintStars(value) {
+        const stars = starPicker.querySelectorAll(".star");
+        stars.forEach(star => {
+            const v = Number(star.dataset.value);
+            star.classList.toggle("active", v <= value);
+            star.setAttribute("aria-checked", v === value ? "true" : "false");
+        });
+        }
 
-  // 2) Toggle: visa/dölj formulär
-  toggleBtn.onclick = (ev) => {
-    ev.preventDefault();
-    form.style.display = (form.style.display === "none") ? "block" : "none";
-    statusEl.textContent = "";
-  };
+        function paintPoops(value) {
+        const poops = poopPicker.querySelectorAll(".poop");
+        poops.forEach(p => {
+            const v = Number(p.dataset.value);
+            p.classList.toggle("active", v <= value);
+            p.setAttribute("aria-checked", v === value ? "true" : "false");
+        });
+        }
 
-  // 3) Skicka review
-  form.onsubmit = async (ev) => {
-    ev.preventDefault();
-    statusEl.textContent = "Skickar...";
+        if (starPicker && ratingInput) {
+        starPicker.addEventListener("click", (ev) => {
+            const target = ev.target.closest(".star");
+            if (!target) return;
+            const val = Number(target.dataset.value);
+            ratingInput.value = String(val);
+            paintStars(val);
+        });
 
-    const author = wrap.querySelector(".review-author").value.trim();
-    const rating = Number(wrap.querySelector(".review-rating").value);
-    const description = wrap.querySelector(".review-description").value.trim();
+        // default
+        paintStars(Number(ratingInput.value || 0));
+        }
 
-    try {
-      const res = await fetch("http://localhost:7070/reviews", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          toiletId: Number(toiletId),
-          toiletName,
-          author,
-          rating,
-          description,
-          photo: ""
-        })
-      });
+        if (poopPicker && poopInput) {
+        poopPicker.addEventListener("click", (ev) => {
+            const target = ev.target.closest(".poop");
+            if (!target) return;
+            const val = Number(target.dataset.value);
+            poopInput.value = String(val);
+            paintPoops(val);
+        });
 
-      if (!res.ok) throw new Error("Backend svarade inte OK");
+        // default
+        paintPoops(Number(poopInput.value || 0));
+        }
 
-      statusEl.textContent = "Tack! Review sparad ";
-      form.reset();
-      form.style.display = "none";
+        // 1) Ladda och visa reviews direkt när popupen öppnas
+        await loadReviews(toiletId, listEl);
 
-      // Ladda om listan i popupen
-      await loadReviews(toiletId, listEl);
+        // 2) Toggle: visa/dölj formulär
+        toggleBtn.onclick = (ev) => {
+            ev.preventDefault();
+            form.style.display = (form.style.display === "none") ? "block" : "none";
+            statusEl.textContent = "";
+        };
 
-    } catch (err) {
-      console.error(err);
-      statusEl.textContent = "Något gick fel när review skulle sparas 💩 ";
-    }
-  };
-});
+        // 3) Skicka review
+        form.onsubmit = async (ev) => {
+            ev.preventDefault();
+            statusEl.textContent = "Skickar...";
 
-// Hjälpfunktion: hämta & rendera reviews
-async function loadReviews(toiletId, listEl) {
-  listEl.textContent = "Laddar reviews...";
+            const author = wrap.querySelector(".review-author").value.trim();
+            const rating = Number(wrap.querySelector(".review-rating").value);
+            const description = wrap.querySelector(".review-description").value.trim();
 
-  try {
-    const res = await fetch(`http://localhost:7070/reviews?toiletId=${encodeURIComponent(toiletId)}`);
-    const reviews = await res.json();
+            if (!rating || rating < 1) {
+            statusEl.textContent = "Välj ett stjärnbetyg först ⭐";
+            return;
+            }
+            if (!poop || poop < 1) {
+            statusEl.textContent = "Välj hur sunkigt det är 💩";
+            return;
+            }
 
-    if (!Array.isArray(reviews) || reviews.length === 0) {
-      listEl.textContent = "Inga reviews än.";
-      return;
-    }
 
-    listEl.innerHTML = reviews.map(r => `
+            try {
+                const res = await fetch("http://localhost:7070/reviews", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        toiletId: Number(toiletId),
+                        toiletName,
+                        author,
+                        rating,
+                        description,
+                        photo: ""
+                    })
+                });
+
+                if (!res.ok) throw new Error("Backend svarade inte OK");
+
+                statusEl.textContent = "Tack! Review sparad ";
+                form.reset();
+                form.style.display = "none";
+
+                // Ladda om listan i popupen
+                await loadReviews(toiletId, listEl);
+
+            } catch (err) {
+                console.error(err);
+                statusEl.textContent = "Något gick fel när review skulle sparas 💩 ";
+            }
+        };
+    });
+
+    // Hjälpfunktion: hämta & rendera reviews
+    async function loadReviews(toiletId, listEl) {
+        listEl.textContent = "Laddar reviews...";
+
+        try {
+            const res = await fetch(`http://localhost:7070/reviews?toiletId=${encodeURIComponent(toiletId)}`);
+            const reviews = await res.json();
+
+            if (!Array.isArray(reviews) || reviews.length === 0) {
+                listEl.textContent = "Inga reviews än.";
+                return;
+            }
+
+            listEl.innerHTML = reviews.map(r => `
       <div class="review-item" style="margin-bottom:8px;">
         <div><b>${r.author}</b> • ${r.date} •  ${r.rating}</div>
         <div>${r.description}</div>
       </div>
     `).join("");
 
-  } catch (err) {
-    console.error(err);
-    listEl.textContent = "Kunde inte ladda reviews.";
-  }
-}
+        } catch (err) {
+            console.error(err);
+            listEl.textContent = "Kunde inte ladda reviews.";
+        }
+    }
 
 
     // Function to move the map and open a popup when users select a toilet
@@ -228,13 +287,13 @@ async function loadReviews(toiletId, listEl) {
     // Function to sort and show sidebar list
     function sidebarContent(sortWith = 'name') {
         const listContainer = document.getElementById("toa-list");
-        listContainer.innerHTML = ""; 
+        listContainer.innerHTML = "";
 
         // Filters data to only include what is being searched OR blank and include all data
         const searchTerm = document.getElementById("toiletSearch")?.value.toLowerCase() || "";
-        const filtered = toilets.filter(t => 
+        const filtered = toilets.filter(t =>
             t.name.toLowerCase().includes(searchTerm)
-        ); 
+        );
 
         // Sort list sort with name otherwise numbered with score highest to lowest
         const sorted = [...filtered].sort((toiletA, toiletB) => {
@@ -262,11 +321,36 @@ async function loadReviews(toiletId, listEl) {
 
                         <form class="popup-review-form" style="display:none; margin-top:8px;">
                             <input class="review-author" type="text" placeholder="Ditt namn" required />
-                            /*<input class="review-rating" type="number" min="1" max="5" step="0.5" value="3" required />*/
+                            
+                            <div class="rating-row" style="margin-top:8px;">
+                                <div><b>Betyg:</b></div>
+                                <div class="star-picker" role="radiogroup" aria-label="Välj betyg">
+                                    <span class="star" data-value="1" role="radio" aria-checked="false">⭐️</span>
+                                    <span class="star" data-value="2" role="radio" aria-checked="false">⭐️</span>
+                                    <span class="star" data-value="3" role="radio" aria-checked="false">⭐️</span>
+                                    <span class="star" data-value="4" role="radio" aria-checked="false">⭐️</span>
+                                    <span class="star" data-value="5" role="radio" aria-checked="false">⭐️</span>
+                                </div>
+                                <input type="hidden" class="review-rating" value="0" />
+                            </div>
+
+                            <div class="poop-row" style="margin-top:8px;">
+                                <div><b>Sunkighet:</b></div>
+                                <div class="poop-picker" role="radiogroup" aria-label="Välj sunkighet">
+                                    <span class="poop" data-value="1" role="radio" aria-checked="false">💩</span>
+                                    <span class="poop" data-value="2" role="radio" aria-checked="false">💩</span>
+                                    <span class="poop" data-value="3" role="radio" aria-checked="false">💩</span>
+                                    <span class="poop" data-value="4" role="radio" aria-checked="false">💩</span>
+                                    <span class="poop" data-value="5" role="radio" aria-checked="false">💩</span>
+                                </div>
+                                <input type="hidden" class="review-poop" value="0" />
+                            </div>
+
+
                             <textarea class="review-description" placeholder="Skriv en kommentar..." required></textarea>
                             <button type="submit">Skicka</button>
-                        <div class="review-status" style="margin-top:6px;"></div>
-                    </form>
+                            <div class="review-status" style="margin-top:6px;"></div>
+                        </form>
 
                     <div class="popup-review-list" style="margin-top:10px;"></div>
                     </div>
@@ -274,15 +358,15 @@ async function loadReviews(toiletId, listEl) {
 
             // Custom marker on map
             const brownIcon = L.divIcon({
-                className: 'marker-box', 
+                className: 'marker-box',
                 html: '<div class="marker-icon"></div>',
                 iconSize: [30, 42],
-                iconAnchor: [15, 42] 
+                iconAnchor: [15, 42]
             });
 
             // Creates marker if it dosent already exist to avoid duping
             if (!markerDict[toilet.id]) {
-                const marker = L.marker([toilet.lat, toilet.lng], { icon: brownIcon }) 
+                const marker = L.marker([toilet.lat, toilet.lng], { icon: brownIcon })
                     .addTo(map)
                     .bindPopup(popupContent);
                 markerDict[toilet.id] = marker;
@@ -304,11 +388,11 @@ async function loadReviews(toiletId, listEl) {
     const sliderLabelValue = document.getElementById("toiletAmount");
     if (toiletSlider && sliderLabelValue) {
         // Updates number next to slider
-        toiletSlider.addEventListener("input", function() {
+        toiletSlider.addEventListener("input", function () {
             sliderLabelValue.textContent = this.value;
         });
         //Calls backend handler
-        toiletSlider.addEventListener("change", function() {
+        toiletSlider.addEventListener("change", function () {
             getAllToilets();
         });
     }
@@ -317,12 +401,12 @@ async function loadReviews(toiletId, listEl) {
     const rangerNumber = document.getElementById("rangeNumber");
     if (rangeSlider && rangerNumber) {
         // Updates number next to slider
-        rangeSlider.addEventListener("input", function() {
+        rangeSlider.addEventListener("input", function () {
             rangerNumber.textContent = this.value;
         });
 
         //Calls backend handler
-        rangeSlider.addEventListener("change", function() {
+        rangeSlider.addEventListener("change", function () {
             getAllToilets();
         });
     }
@@ -331,9 +415,9 @@ async function loadReviews(toiletId, listEl) {
         const markerFilter = document.getElementById("markerFilter")?.checked;
         // Checks if marker checkbox is False and stops function in that case 
         if (!markerFilter) {
-            return; 
+            return;
         }
-    
+
         currentLat = event.latlng.lat;
         currentLng = event.latlng.lng;
         const rangeValue = document.getElementById("rangeSlider")?.value;
@@ -355,7 +439,7 @@ async function loadReviews(toiletId, listEl) {
         getAllToilets();
     }
 
-    document.getElementById("markerFilter")?.addEventListener("change", function() {
+    document.getElementById("markerFilter")?.addEventListener("change", function () {
         if (!this.checked) {
             if (userMarker) {
                 map.removeLayer(userMarker);
@@ -367,7 +451,7 @@ async function loadReviews(toiletId, listEl) {
             }
             currentLat = null;
             currentLng = null;
-            getAllToilets(); 
+            getAllToilets();
         }
     });
 
@@ -376,8 +460,8 @@ async function loadReviews(toiletId, listEl) {
     // The searchbar event listner only trigers if a value is input in html
     const searchInput = document.getElementById("toiletSearch");
     if (searchInput) {
-        searchInput.addEventListener("input", function() {
-            sidebarContent(); 
+        searchInput.addEventListener("input", function () {
+            sidebarContent();
         });
     }
 
@@ -390,7 +474,7 @@ async function loadReviews(toiletId, listEl) {
     const standardView = document.getElementById("sortName");
     const sortWithPoints = document.getElementById("sortScore");
     const sortWithDank = document.getElementById("sortDankness");
-    
+
     // Events for what sort button is clicked
     if (standardView) standardView.onclick = () => sidebarContent('name');
     if (sortWithPoints) sortWithPoints.onclick = () => sidebarContent('score');
@@ -400,7 +484,7 @@ async function loadReviews(toiletId, listEl) {
     // if (testButton) {
     //     testButton.addEventListener("click", getAllToilets);
     // }
-    
+
     // Run function on startup
     getAllToilets();
 });
@@ -409,10 +493,10 @@ async function loadReviews(toiletId, listEl) {
 const buttons = document.querySelectorAll('.tab-buttons');
 
 buttons.forEach(button => {
-    button.addEventListener('click', function() {
+    button.addEventListener('click', function () {
         buttons.forEach(btn => btn.classList.remove('active'));
-        
+
         this.classList.add('active');
-        
+
     });
 });
