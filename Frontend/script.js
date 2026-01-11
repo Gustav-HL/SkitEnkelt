@@ -76,6 +76,97 @@ document.addEventListener("DOMContentLoaded", async function () {
     // Dict stores markers by id 
     const markerDict = {};
 
+        map.on("popupopen", async (e) => {
+  const root = e.popup.getElement();
+  if (!root) return;
+
+  const wrap = root.querySelector(".popup-reviews");
+  if (!wrap) return;
+
+  const toiletId = wrap.dataset.toiletId;
+  const toiletName = wrap.dataset.toiletName;
+
+  const toggleBtn = wrap.querySelector(".popup-review-toggle");
+  const form = wrap.querySelector(".popup-review-form");
+  const listEl = wrap.querySelector(".popup-review-list");
+  const statusEl = wrap.querySelector(".review-status");
+
+  // 1) Ladda och visa reviews direkt när popupen öppnas
+  await loadReviews(toiletId, listEl);
+
+  // 2) Toggle: visa/dölj formulär
+  toggleBtn.onclick = (ev) => {
+    ev.preventDefault();
+    form.style.display = (form.style.display === "none") ? "block" : "none";
+    statusEl.textContent = "";
+  };
+
+  // 3) Skicka review
+  form.onsubmit = async (ev) => {
+    ev.preventDefault();
+    statusEl.textContent = "Skickar...";
+
+    const author = wrap.querySelector(".review-author").value.trim();
+    const rating = Number(wrap.querySelector(".review-rating").value);
+    const description = wrap.querySelector(".review-description").value.trim();
+
+    try {
+      const res = await fetch("http://localhost:7070/reviews", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          toiletId: Number(toiletId),
+          toiletName,
+          author,
+          rating,
+          description,
+          photo: ""
+        })
+      });
+
+      if (!res.ok) throw new Error("Backend svarade inte OK");
+
+      statusEl.textContent = "Tack! Review sparad ";
+      form.reset();
+      form.style.display = "none";
+
+      // Ladda om listan i popupen
+      await loadReviews(toiletId, listEl);
+
+    } catch (err) {
+      console.error(err);
+      statusEl.textContent = "Något gick fel när review skulle sparas 💩 ";
+    }
+  };
+});
+
+// Hjälpfunktion: hämta & rendera reviews
+async function loadReviews(toiletId, listEl) {
+  listEl.textContent = "Laddar reviews...";
+
+  try {
+    const res = await fetch(`http://localhost:7070/reviews?toiletId=${encodeURIComponent(toiletId)}`);
+    const reviews = await res.json();
+
+    if (!Array.isArray(reviews) || reviews.length === 0) {
+      listEl.textContent = "Inga reviews än.";
+      return;
+    }
+
+    listEl.innerHTML = reviews.map(r => `
+      <div class="review-item" style="margin-bottom:8px;">
+        <div><b>${r.author}</b> • ${r.date} •  ${r.rating}</div>
+        <div>${r.description}</div>
+      </div>
+    `).join("");
+
+  } catch (err) {
+    console.error(err);
+    listEl.textContent = "Kunde inte ladda reviews.";
+  }
+}
+
+
     // Function to move the map and open a popup when users select a toilet
     function selectToilet(toilet, listElement) {
         map.flyTo([toilet.lat, toilet.lng], 16);
@@ -148,6 +239,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             const popupContent = `
                 <div class="toilet-popup">
                     <strong class="popup-title">${toilet.name}</strong>
+                    
                     <div class="popup-info">
                         <span><b>Kategori:</b> ${toilet.category}</span>
                         <span><b>Poäng:</b> ${toilet.score}/100</span>
@@ -156,9 +248,20 @@ document.addEventListener("DOMContentLoaded", async function () {
                         <span><b>Avgift:</b> ${toilet.fee !== "" ? toilet.fee : "Gratis"}</span>
                         <span><b>Skötbord:</b> ${toilet.change_table_child > 0 ? "Finns" : "Saknas"}</span>
                     </div>
-                    <button class="review-button pop-up review" data-toilet-id="${toilet.id}">
-                        Review 
-                    </button>
+                        <!-- REVIEW-DEL -->
+                    <div class="popup-reviews" data-toilet-id="${toilet.id}" data-toilet-name="${toilet.name}">
+                        <button type="button" class="popup-review-toggle">Review</button>
+
+                        <form class="popup-review-form" style="display:none; margin-top:8px;">
+                            <input class="review-author" type="text" placeholder="Ditt namn" required />
+                            /*<input class="review-rating" type="number" min="1" max="5" step="0.5" value="3" required />*/
+                            <textarea class="review-description" placeholder="Skriv en kommentar..." required></textarea>
+                            <button type="submit">Skicka</button>
+                        <div class="review-status" style="margin-top:6px;"></div>
+                    </form>
+
+                    <div class="popup-review-list" style="margin-top:10px;"></div>
+                    </div>
                 </div>`;
             
             // Custom marker on map
