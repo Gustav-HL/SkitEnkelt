@@ -7,48 +7,6 @@ document.addEventListener("DOMContentLoaded", async function () {
         attribution: '&copy; OpenStreetMap'
     }).addTo(map);
 
-    // TOALETT-DATABAS, ska kompletteras med getmetoder från vårt API
-    // const toilets = [
-    //         {
-    //             name: "Nobeltorget",
-    //             lat: 55.5916569774,
-    //             lng: 13.0202647274,
-    //             category: "lyxig",
-    //             score: 85,
-    //             dankness: 10
-    //         },
-    //         {
-    //             name: "Parktoalett",
-    //             lat: 55.583,
-    //             lng: 13.0230,
-    //             category: "sunk",
-    //             score: 20,
-    //             dankness: 95
-    //         },
-    //         {
-    //             name: "Sofielund",
-    //             lat: 55.589,
-    //             lng: 13.0155,
-    //             category: "standard",
-    //             score: 55,
-    //             dankness: 40
-    //         },
-    //         {
-    //             name: "Casa Björnheimer",
-    //             lat: 55.602,
-    //             lng: 13.0135,
-    //             category: "EPIC",
-    //             score: 100,
-    //             dankness: 0
-    //         }
-    //     ];
-    //
-    //
-    //
-    // // Rita ut markers från listan
-    // toilets.forEach(t => {
-    //     L.marker([t.lat, t.lng]).addTo(map).bindPopup(t.id);
-    // });
 
     let userMarker;
     let currentLat = null;
@@ -133,7 +91,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             listElement.classList.add('selected');
         }
 
-        // Adds routing lines from position to selected toilet
+        // Checkbox for routing, toggleable.
         const routingEnabled = document.getElementById("routingToggle")?.checked;
         if (routingActive) {
             map.removeControl(routing);
@@ -144,6 +102,8 @@ document.addEventListener("DOMContentLoaded", async function () {
         }
     }
 
+
+    // Adds routing lines from position to selected toilet
     function routeTo(fromLat, fromLng, toLat, toLng) {
         routing = L.Routing.control({
             waypoints: [
