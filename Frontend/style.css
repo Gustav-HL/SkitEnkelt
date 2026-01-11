@@ -195,6 +195,27 @@ body {
     box-shadow: 0 0 5px rgba(121, 85, 72, 0.2);
 }
 
+.star-picker,
+.poop-picker {
+    display: flex;
+    gap: 6px;
+    margin-top: 4px;
+}
+
+.star,
+.poop {
+    cursor: pointer;
+    user-select: none;
+    font-size: 20px;
+    opacity: 0.35;
+}
+
+.star.active,
+.poop.active {
+    opacity: 1;
+}
+
+/* Filters/layout (previously nested, now valid CSS) */
 .filters {
     width: 290px;
     display: flex;
@@ -275,6 +296,10 @@ input[type="range"] {
 .icon-filter span {
     font-size: 0.7rem;
     color: #888;
+    text-align: center;
+    width: 100%;
+    white-space: nowrap;
+    margin-top: 6px;
 }
 
 .icon-filter input:checked+i {
@@ -292,7 +317,6 @@ input[type="range"] {
 #routingToggle:checked+i {
     color: #a0522d;
 }
-
 
 .icon-filter:hover i {
     transform: scale(1.1);

@@ -59,6 +59,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         for (let key in markerDict) delete markerDict[key];
         console.log(data);
         sidebarContent();
+
     }
 
     let toilets = [];
@@ -94,6 +95,55 @@ document.addEventListener("DOMContentLoaded", async function () {
         const form = wrap.querySelector(".popup-review-form");
         const listEl = wrap.querySelector(".popup-review-list");
         const statusEl = wrap.querySelector(".review-status");
+        // --- STAR & POOP PICKERS ---
+        const starPicker = wrap.querySelector(".star-picker");
+        const poopPicker = wrap.querySelector(".poop-picker");
+        const ratingInput = wrap.querySelector(".review-rating"); // hidden
+        const poopInput = wrap.querySelector(".review-poop");     // hidden
+
+        function paintStars(value) {
+            const stars = starPicker.querySelectorAll(".star");
+            stars.forEach(star => {
+                const v = Number(star.dataset.value);
+                star.classList.toggle("active", v <= value);
+                star.setAttribute("aria-checked", v === value ? "true" : "false");
+            });
+        }
+
+        function paintPoops(value) {
+            const poops = poopPicker.querySelectorAll(".poop");
+            poops.forEach(p => {
+                const v = Number(p.dataset.value);
+                p.classList.toggle("active", v <= value);
+                p.setAttribute("aria-checked", v === value ? "true" : "false");
+            });
+        }
+
+        if (starPicker && ratingInput) {
+            starPicker.addEventListener("click", (ev) => {
+                const target = ev.target.closest(".star");
+                if (!target) return;
+                const val = Number(target.dataset.value);
+                ratingInput.value = String(val);
+                paintStars(val);
+            });
+
+            // default
+            paintStars(Number(ratingInput.value || 0));
+        }
+
+        if (poopPicker && poopInput) {
+            poopPicker.addEventListener("click", (ev) => {
+                const target = ev.target.closest(".poop");
+                if (!target) return;
+                const val = Number(target.dataset.value);
+                poopInput.value = String(val);
+                paintPoops(val);
+            });
+
+            // default
+            paintPoops(Number(poopInput.value || 0));
+        }
 
         // 1) Ladda och visa reviews direkt när popupen öppnas
         await loadReviews(toiletId, listEl);
@@ -112,7 +162,17 @@ document.addEventListener("DOMContentLoaded", async function () {
 
             const author = wrap.querySelector(".review-author").value.trim();
             const rating = Number(wrap.querySelector(".review-rating").value);
+            const poop = Number(wrap.querySelector(".review-poop").value); // Hämtar från dolt fält
             const description = wrap.querySelector(".review-description").value.trim();
+
+            if (!rating || rating < 1) {
+                statusEl.textContent = "Välj ett stjärnbetyg först ⭐";
+                return;
+            }
+            if (!poop || poop < 1) {
+                statusEl.textContent = "Välj hur sunkigt det är 💩";
+                return;
+            }
 
             try {
                 const res = await fetch("http://localhost:7070/reviews", {
@@ -123,6 +183,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                         toiletName,
                         author,
                         rating,
+                        poop,
                         description,
                         photo: ""
                     })
@@ -141,8 +202,8 @@ document.addEventListener("DOMContentLoaded", async function () {
                 console.error(err);
                 statusEl.textContent = "Något gick fel när review skulle sparas 💩 ";
             }
-        };
-    });
+        }; // Stänger form.onsubmit
+    }); // Stänger map.on("popupopen")
 
     // Hjälpfunktion: hämta & rendera reviews
     async function loadReviews(toiletId, listEl) {
@@ -158,7 +219,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             }
 
             listEl.innerHTML = reviews.map(r => `
-        <div class="review-item" style="margin-bottom:8px;">
+<div class="review-item" style="margin-bottom:8px;">
             <div><b>${r.author}</b> • ${r.date} •  ${r.rating}</div>
             <div>${r.description}</div>
         </div>
@@ -195,6 +256,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         if (routingEnabled) {
             routeTo(currentLat, currentLng, toilet.lat, toilet.lng);
         }
+
     }
 
 
@@ -220,6 +282,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         const filtered = toilets.filter(t =>
             t.name.toLowerCase().includes(searchTerm)
         );
+
         // Updates number showing amount of toilets found
         if (countContainer) {
             countContainer.textContent = filtered.length;
@@ -269,11 +332,36 @@ document.addEventListener("DOMContentLoaded", async function () {
 
                         <form class="popup-review-form" style="display:none; margin-top:8px;">
                             <input class="review-author" type="text" placeholder="Ditt namn" required />
-                            /*<input class="review-rating" type="number" min="1" max="5" step="0.5" value="3" required />*/
+                            
+                            <div class="rating-row" style="margin-top:8px;">
+                                <div><b>Betyg:</b></div>
+                                <div class="star-picker" role="radiogroup" aria-label="Välj betyg">
+                                    <span class="star" data-value="1" role="radio" aria-checked="false">⭐️</span>
+                                    <span class="star" data-value="2" role="radio" aria-checked="false">⭐️</span>
+                                    <span class="star" data-value="3" role="radio" aria-checked="false">⭐️</span>
+                                    <span class="star" data-value="4" role="radio" aria-checked="false">⭐️</span>
+                                    <span class="star" data-value="5" role="radio" aria-checked="false">⭐️</span>
+                                </div>
+                                <input type="hidden" class="review-rating" value="0" />
+                            </div>
+
+                            <div class="poop-row" style="margin-top:8px;">
+                                <div><b>Sunkighet:</b></div>
+                                <div class="poop-picker" role="radiogroup" aria-label="Välj sunkighet">
+                                    <span class="poop" data-value="1" role="radio" aria-checked="false">💩</span>
+                                    <span class="poop" data-value="2" role="radio" aria-checked="false">💩</span>
+                                    <span class="poop" data-value="3" role="radio" aria-checked="false">💩</span>
+                                    <span class="poop" data-value="4" role="radio" aria-checked="false">💩</span>
+                                    <span class="poop" data-value="5" role="radio" aria-checked="false">💩</span>
+                                </div>
+                                <input type="hidden" class="review-poop" value="0" />
+                            </div>
+
+
                             <textarea class="review-description" placeholder="Skriv en kommentar..." required></textarea>
                             <button type="submit">Skicka</button>
-                        <div class="review-status" style="margin-top:6px;"></div>
-                    </form>
+                            <div class="review-status" style="margin-top:6px;"></div>
+                        </form>
 
                     <div class="popup-review-list" style="margin-top:10px;"></div>
                     </div>
