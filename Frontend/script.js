@@ -1,12 +1,16 @@
 // Event Listner to finish HTML load before script
 document.addEventListener("DOMContentLoaded", async function () {
     // Load and display map
-    const map = L.map('map').setView([55.605, 13.003], 13);
+    const map = L.map('map', {
+        zoomControl: false
+    }).setView([55.585, 12.953], 13);
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
         attribution: '&copy; OpenStreetMap'
     }).addTo(map);
-
+    L.control.zoom({
+        position: 'bottomright'
+    }).addTo(map);
 
     let userMarker;
     let currentLat = null;
@@ -231,13 +235,13 @@ document.addEventListener("DOMContentLoaded", async function () {
                 if (sortWith === 'score') {
                     const valA = parseFloat(toiletA.rating) || 0;
                     const valB = parseFloat(toiletB.rating) || 0;
-                    return valB - valA; 
+                    return valB - valA;
                 }
 
                 if (sortWith === 'distance') {
                     const distA = parseFloat(toiletA.distance) || 0;
                     const distB = parseFloat(toiletB.distance) || 0;
-                    return distA - distB; 
+                    return distA - distB;
                 }
                 if (sortWith === 'dankness') {
                     const valA = parseFloat(toiletA[sortWith]) || 0;
