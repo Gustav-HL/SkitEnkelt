@@ -21,18 +21,22 @@
     --text-black: #000000;
 }
 
-
 body {
     margin: 0;
     font-family: Arial, sans-serif;
+    /* font-family: 'Roboto', sans-serif; */
     display: flex;
     height: 100vh;
     overflow: hidden;
 }
-
+#toilet-amount{
+    margin: 10px 0 0 0;
+}
 /* Sidopanel */
 #sidebar {
-    width: 400px;
+    width: 23%;
+    min-width: 350px !important;
+    flex-shrink: 0;
     /* background-color: rgb(138, 201, 180); */
     background-color: var(--bg-sidebar);
     /*background-image: url("shitter.jpg");*/
@@ -79,7 +83,7 @@ body {
     position: relative;
 }
 
-#suggestions {
+/* #suggestions {
     position: absolute;
     top: 100%;
     left: 0;
@@ -104,7 +108,7 @@ body {
 
 .suggestion-item:hover {
     background: #f3f3f3;
-}
+} */
 
 /*tar bort routeplanner*/
 .leaflet-routing-container {
@@ -119,15 +123,15 @@ body {
 
 .tab-buttons {
     flex: 1;
-    padding: 10px 5px;
+    padding: 10px 8px; 
     border: none;
     background-color: var(--bg-tab-inactive);
     cursor: pointer;
     font-size: 0.9rem;
     transition: background 0.2s;
     border-right: 1px solid var(--border-light);
+    white-space: nowrap;       
 }
-
 /* The active pressed button with the brown underscore */
 .tab-buttons.active {
     color: var(--primary-dark);
@@ -152,6 +156,9 @@ body {
     box-shadow: 0 2px 4px rgba(0,0,0,0.05); 
     transition: all 0.2s ease;
     border: 1px solid transparent;
+}
+.toilet_card h4{
+    display: inline;
 }
 
 .toilet_card strong {
@@ -269,4 +276,137 @@ body {
 #toiletSearch:focus {
     border-color: var(--primary-brown);
     box-shadow: 0 0 5px rgba(121, 85, 72, 0.2);
+}
+.filters {
+    width: 290px; 
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 15px;
+    align-items: left;
+
+    margin-left: auto;
+    margin-right: auto;
+}
+.icon-row {
+    display: flex;
+    width: 100%;
+    justify-content: space-between; /* Fördelar boxarna jämnt */
+    gap: 10px; /* Jämnt mellanrum mellan de tre boxarna */
+}
+
+.icon-filter {
+    /* Magi-raden: grow=1, shrink=1, basis=0 */
+    flex: 1 1 0; 
+    min-width: 0; /* Tillåter flex-basis att fungera korrekt */
+    
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    
+    padding: 10px 5px;
+    background: var(--bg-card); /* Eller din önskade bakgrund */
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.icon-filter span {
+    font-size: 0.65rem; /* Lite mindre för att garantera plats */
+    text-align: center;
+    width: 100%;
+    white-space: nowrap;
+    margin-top: 6px;
+}
+
+.icon-filter i {
+    font-size: 1.4rem;
+    margin-bottom: 2px;
+}
+
+.icon-filter span {
+    font-size: 0.7rem;
+    color: #888;
+}
+
+.icon-filter input:checked + i {
+    filter: grayscale(0%);
+}
+
+#filterTable:checked + i {
+    color: #d35e98; 
+}
+
+#markerFilter:checked + i {
+    color: #2965a5; 
+}
+
+#routingToggle:checked + i {
+    color: #2965a5; 
+}
+
+
+.icon-filter:hover i {
+    transform: scale(1.1);
+}
+
+.tab-buttons i {
+    margin-right: 5px;
+}
+.list-header{
+    display: flex;
+    flex-direction: left;
+    margin-left: auto;
+    margin-right: 30px;
+    margin: 0 10;
+}
+
+.filter-dropdown {
+    margin:  0;
+    border-bottom: 1px solid var(--border-light);
+    padding-bottom: 10px;
+}
+
+summary {
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    cursor: pointer;
+    background: var(--bg-card);
+    border-radius: 8px;
+    margin: 8px;
+    font-weight: bold;
+}
+
+summary::-webkit-details-marker {
+    display: none;
+}
+
+.dropdown-content {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.3s ease-out, opacity 0.2s;
+    opacity: 0;
+    overflow: hidden;
+}
+
+.filter-dropdown[open] .dropdown-content {
+    grid-template-rows: 1fr; 
+    opacity: 1;
+}
+
+.filters {
+    min-height: 0;
+    padding: 15px 10px;
+}
+
+summary i {
+    transition: transform 0.3s ease;
+}
+
+.filter-dropdown[open] summary i {
+    transform: rotate(180deg);
 }

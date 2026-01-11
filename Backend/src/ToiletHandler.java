@@ -92,49 +92,40 @@ public class ToiletHandler {
         double lon = Double.parseDouble(lonParam);
         double range = Double.parseDouble(rangeParam);
 
-
         List<Toilet> toilets = featureCollection.features.stream()
-                .map(f ->
-
-                        {
-                            try {
-                                return new Toilet(
-                                        f.properties.id,
-                                        f.properties.name,
-                                        f.geometry.coordinates.get(0),
-                                        f.geometry.coordinates.get(1),
-                                        f.properties.change_table_child,
-                                        f.properties.fee,
-                                        f.properties.wc,
-                                        getReviewsForSelectedToilet(f.properties.id),
-                                        f.properties.open_hours
-                                );
-                            } catch (FileNotFoundException e) {
-                                throw new RuntimeException(e);
-                            }
-                        }
-                )
-                //Filtering away toilets with no change tables if the query is passed
-                .filter(t -> ctx.queryParam("change_table_child") == null || t.getChange_table_child() > 0)
-                //Filtering away toilets with a fee if the query is passed
-                .filter(t -> ctx.queryParam("fee") == null || t.getFee().isBlank())
-                //Filtering away toilets without the given amount of wcs if the query is passed
-                .filter(t -> ctx.queryParam("wc") == null || t.getNbrWcs() >= Integer.parseInt(Objects.requireNonNull(ctx.queryParam("wc"))))
-                //Proximity filter
-                .filter(t -> calculateDistance(
-                        lat,
-                        lon,
-                        t.getLat(),
-                        t.getLng()
-                ) <= range)
-                .sorted((a, b) -> {
-                    double distA = calculateDistance(lat, lon, a.getLat(), a.getLng());
-                    double distB = calculateDistance(lat, lon, b.getLat(), b.getLng());
-                    return Double.compare(distA, distB);
+                .map(f -> {
+                    try {
+                        return new Toilet(
+                                f.properties.id,
+                                f.properties.name,
+                                f.geometry.coordinates.get(0),
+                                f.geometry.coordinates.get(1),
+                                f.properties.change_table_child,
+                                f.properties.fee,
+                                f.properties.wc,
+                                getReviewsForSelectedToilet(f.properties.id),
+                                f.properties.open_hours
+                        );
+                    } catch (FileNotFoundException e) {
+                        throw new RuntimeException(e);
+                    }
                 })
+                .map(t -> {
+                    double distance = calculateDistance(
+                            lat,
+                            lon,
+                            t.getLat(),
+                            t.getLng()
+                    );
+                    t.setDistance(distance);
+                    return t;
+                })
+                .filter(t -> ctx.queryParam("change_table_child") == null || t.getChange_table_child() > 0)
+                .filter(t -> ctx.queryParam("fee") == null || t.getFee().isBlank())
+                .filter(t -> ctx.queryParam("wc") == null || t.getNbrWcs() >= Integer.parseInt(Objects.requireNonNull(ctx.queryParam("wc"))))
+                .filter(t -> t.getDistance() <= range)
+                .sorted(Comparator.comparingDouble(Toilet::getDistance))
                 .collect(Collectors.toList());
-
-
 
         int numberOfShittersCloseBy = 0;
         int numbersOfChangingTables = 0;
@@ -142,15 +133,13 @@ public class ToiletHandler {
             numberOfShittersCloseBy += t.getNbrWcs();
             numbersOfChangingTables += t.getChange_table_child();
 
-            double distance = calculateDistance(lat, lon, t.getLat(), t.getLng());
             System.out.println(
-                    t.getName() + " → " + Math.round(distance) + " meters"
+                    t.getName() + " → " + Math.round(t.getDistance()) + " meters"
             );
         }
+
         System.out.println("Number of toilets in range: " + numberOfShittersCloseBy);
         System.out.println("Number of changing tables in range: " + numbersOfChangingTables);
-
-
 
         ctx.json(toilets);
     }
