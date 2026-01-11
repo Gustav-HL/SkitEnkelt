@@ -31,6 +31,9 @@ public class App {
                 .get("/reviews", ctx -> {
                     toiletHandler.getReviewsByToiletIdFromContext(ctx);
                 })
+                .get("/rating", ctx -> {
+                    toiletHandler.getRatingByToiletIdFromContext(ctx);
+                })
                 .post("/reviews", ctx -> toiletHandler.addReview(ctx))
                 .start(7070);
 

@@ -18,4 +18,20 @@ public class Reviews {
         this.reviews = reviews;
     }
 
+    public double getAverageRating(int toiletID){
+        double totalRating = 0;
+        int nbrOfReviews = 0;
+        for(Review r : reviews){
+            if(r.getToiletId() == toiletID){
+                nbrOfReviews ++;
+                totalRating += r.getRating();
+            };
+        }
+        if(nbrOfReviews == 0 ){
+            return 0;
+        } else {
+            return totalRating/nbrOfReviews;
+        }
+    }
+
 }

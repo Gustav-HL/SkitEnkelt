@@ -158,7 +158,6 @@ public class ToiletHandler {
 
         Gson gson = new Gson();
         String updated = gson.toJson(reviewsCollection);
-
         try {
             Files.writeString(
                     Path.of("./reviews.json"),
@@ -170,6 +169,9 @@ public class ToiletHandler {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+
+
 
         ctx.status(201).json(incoming);
     }
@@ -183,6 +185,8 @@ public class ToiletHandler {
                 result.add(review);
             }
         }
+
+        System.out.println(reviewsCollection.getAverageRating(toiletId));
         return result;
     }
 
@@ -200,6 +204,19 @@ public class ToiletHandler {
         int toiletId = Integer.parseInt(tidParam);
         List<Review> reviews = getReviewsByToiletId(toiletId);
         ctx.json(reviews);
+    }
+
+    //Called via /rating
+    public void getRatingByToiletIdFromContext(Context ctx) throws FileNotFoundException {
+        getToiletsAnew();
+        String tidParam = ctx.queryParam("toiletId");
+        if (tidParam == null) {
+            ctx.status(400).result("Missing query param: toiletId");
+            return;
+        }
+
+        int toiletId = Integer.parseInt(tidParam);
+        ctx.json(reviewsCollection.getAverageRating(toiletId));
     }
 
 
