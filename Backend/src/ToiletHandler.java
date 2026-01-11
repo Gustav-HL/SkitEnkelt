@@ -6,6 +6,10 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -17,7 +21,9 @@ public class ToiletHandler {
     private FeatureCollection featureCollection;
     static Reviews reviewsCollection;
     private final String toiletsUrl = "https://ckan-malmo.dataplatform.se/dataset/82b9290d-bd82-4611-ae28-161f95c71339/resource/81b70be0-1860-467f-bfcc-5bf70d094dd0/download/offentliga_toaletter.json";
+    private final String reviewsUrl = "reviews.json";
     private final String R = String.valueOf(6371000);
+    Gson gson = new Gson();
 
     public ToiletHandler() throws FileNotFoundException {
         getToiletsAnew();
@@ -26,7 +32,7 @@ public class ToiletHandler {
     public void getToiletsAnew() throws FileNotFoundException {
         JsonReader reader = new JsonReader(new StringReader(callToiletsAPI()));
         JsonReader reviewReader = new JsonReader(new FileReader("./reviews.json"));
-        Gson gson = new Gson();
+
         this.featureCollection = gson.fromJson(reader, FeatureCollection.class);
         reviewsCollection = gson.fromJson(reviewReader, Reviews.class);
     }
@@ -35,12 +41,39 @@ public class ToiletHandler {
     public String callToiletsAPI() {
         try {
             HttpClient client = HttpClient.newHttpClient();
-            HttpRequest request = HttpRequest.newBuilder().uri(URI.create(toiletsUrl)).header("Accept", "application/json").GET().build();
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(toiletsUrl))
+                    .header("Accept", "application/json")
+                    .GET().build();
             return client.send(request, HttpResponse.BodyHandlers.ofString()).body();
         } catch (IOException e) {
             throw new RuntimeException(e);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    public String postReviewAPI(String reviewsUrl, String reviewJson) {
+        try {
+            HttpClient client = HttpClient.newHttpClient();
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(reviewsUrl))
+                    .header("Accept", "application/json")
+                    .header("Content-Type", "application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString(reviewJson))
+                    .build();
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            int status = response.statusCode();
+            if (status < 200 || status >= 300) {
+                throw new RuntimeException("POST failed: " + status + " body=" + response.body());
+            }
+            return response.body();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+
         }
     }
 
@@ -122,10 +155,38 @@ public class ToiletHandler {
         ctx.json(toilets);
     }
 
-    public void addReview(Context ctx) {
+    public void addReview(Context ctx) throws FileNotFoundException {
+        getToiletsAnew();
+
+        Review incoming = ctx.bodyAsClass(Review.class);
+        int maxId = 0;
+        for (Review r : reviewsCollection.getReviews()) {
+            if (r.getId() > maxId) maxId = r.getId();
+        }
+        incoming.setId(maxId + 1);
+
+        reviewsCollection.getReviews().add(incoming);
+
+        Gson gson = new Gson();
+        String updated = gson.toJson(reviewsCollection);
+
+        try {
+            Files.writeString(
+                    Path.of("./reviews.json"),
+                    updated,
+                    StandardCharsets.UTF_8,
+                    StandardOpenOption.CREATE,
+                    StandardOpenOption.TRUNCATE_EXISTING
+            );
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        ctx.status(201).json(incoming);
     }
 
-    public static List<Review> getReviewsForSelectedToilet(int toiletId) throws FileNotFoundException {
+
+    public static List<Review> getReviewsByToiletId(int toiletId) throws FileNotFoundException {
         List<Review> result = new ArrayList<>();
 
         for(Review review : reviewsCollection.getReviews()){
@@ -135,6 +196,23 @@ public class ToiletHandler {
         }
         return result;
     }
+
+    //HTTP requests kräver ctx och Toilet-objektet fetchar reviews med toiletId, så metoden övanpå var inkompatibel.
+    //Därför behöver vi en till metod som accepterar ctx som argument
+    public void getReviewsByToiletIdFromContext(Context ctx) throws FileNotFoundException {
+        getToiletsAnew();
+
+        String tidParam = ctx.queryParam("toiletId");
+        if (tidParam == null) {
+            ctx.status(400).result("Missing query param: toiletId");
+            return;
+        }
+
+        int toiletId = Integer.parseInt(tidParam);
+        List<Review> reviews = getReviewsByToiletId(toiletId);
+        ctx.json(reviews);
+    }
+
 
     private double calculateDistance(double lat1, double lon1, double lat2, double lon2) {//jordens diameter i meter
         double dLat = Math.toRadians(lat2 - lat1);
@@ -148,4 +226,6 @@ public class ToiletHandler {
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         return Double.parseDouble(R) * c;
     }
+
+
 }
