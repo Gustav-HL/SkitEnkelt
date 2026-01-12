@@ -271,6 +271,30 @@ document.addEventListener("DOMContentLoaded", async function () {
         routingActive = true;
     }
 
+    function numOrNull(x) {
+        const n = Number(x);
+        return Number.isFinite(n) ? n : null;
+    }
+
+    function formatScore100FromRating(rating5) {
+        const r = numOrNull(rating5);
+        if (!r || r <= 0) return "Inga betyg ännu";
+        const score100 = Math.round(r * 20);
+        return `${score100}/100`;
+        }
+
+    function formatDankness100(danknessValue) {
+        const d = numOrNull(danknessValue);
+        if (!d || d <= 0) return "Inga betyg ännu";
+
+        // Om backend skickar 1–5 → konvertera till /100
+        if (d <= 5) return `${Math.round(d * 20)}/100`;
+
+        // Om backend redan skickar 0–100
+        return `${Math.round(d)}/100`;
+    }
+
+
     // Function to sort and show sidebar list
     function sidebarContent(sortWith = 'id') {
         const listContainer = document.getElementById("toa-list");
@@ -320,8 +344,10 @@ document.addEventListener("DOMContentLoaded", async function () {
                     
                     <div class="popup-info">
                         <!--<span><b>Kategori:</b> ${toilet.category}</span>-->
-                        <span><b>Poäng:</b> ${toilet.score}/100</span>
-                        <span><b>Sunkighet:</b> ${toilet.dankness}/100</span>
+                        <!--span><b>Poäng:</b> ${toilet.score}/100</span-->
+                        <!--span><b>Sunkighet:</b> ${toilet.dankness}/100</span-->
+                        <span><b>Poäng:</b> ${formatScore100FromRating(toilet.rating)}</span>
+                        <span><b>Sunkighet:</b> ${formatDankness100(toilet.dankness)}</span>
                         <span><b>Antal toaletter:</b> ${toilet.nbrWcs}</span>
                         <span><b>Avgift:</b> ${toilet.fee !== "" ? toilet.fee : "Gratis"}</span>
                         <span><b>Skötbord:</b> ${toilet.change_table_child > 0 ? "Finns" : "Saknas"}</span>
