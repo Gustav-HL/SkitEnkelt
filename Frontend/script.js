@@ -296,8 +296,8 @@ document.addEventListener("DOMContentLoaded", async function () {
                 }
 
                 if (sortWith === 'score') {
-                    const valA = parseFloat(toiletA.rating) || 0;
-                    const valB = parseFloat(toiletB.rating) || 0;
+                    const valA = parseFloat(toiletA.avgRating) || 0;
+                    const valB = parseFloat(toiletB.avgRating) || 0;
                     return valB - valA;
                 }
 
@@ -387,7 +387,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             li.className = "toilet_card";
 
             // Convert rating to one decimal
-            const displayRating = toilet.rating > 0 ? toilet.rating.toFixed(1) : "Inga betyg";
+            const displayRating = toilet.avgRating > 0 ? toilet.avgRating.toFixed(1) : "Inga betyg";
             const reviewCount = toilet.reviews ? toilet.reviews.length : 0;
 
             li.innerHTML = `
