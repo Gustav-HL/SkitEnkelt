@@ -7,16 +7,18 @@ public class Review {
     private int toiletId;
     private String toiletName;
     private double rating;
+    private double sunkRating;
     private String description;
     private String photo;
 
-    public Review(int id, String author, String date, int toiletId, String toalettNamn, double rating, String description, String photo, int shittyness){
+    public Review(int id, String author, String date, int toiletId, String toalettNamn, double rating, double poop, String description, String photo){
         this.id = id;
         this.author = author;
         this.date = date;
         this.toiletId = toiletId;
         this.toiletName = toalettNamn;
         this.rating = rating;
+        this.sunkRating = poop;
         this.description = description;
         this.photo = photo;
     }
@@ -84,7 +86,12 @@ public class Review {
         this.photo = photo;
     }
 
-    public int getShittyness(){
-        return 0;
+    public double getShittyness(){
+        return sunkRating;
     }
+
+    public void setShittyness(double shittyness){
+        this.sunkRating = shittyness;
+    }
+
 }
