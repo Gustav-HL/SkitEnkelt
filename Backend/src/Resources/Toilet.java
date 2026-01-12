@@ -14,9 +14,9 @@ public class Toilet {
     private double avgRating;
     private String openingHours;
     private int distance;
-    private int shittyness;
+    private double shittyness;
 
-    public Toilet(int id, String name, double lng, double lat, int change_table_child, String fee, int nbrWcs, List<Review> reviews, String rating, String openingHours, int shitness) {
+    public Toilet(int id, String name, double lng, double lat, int change_table_child, String fee, int nbrWcs, List<Review> reviews, String rating, String openingHours, double shittyness) {
         this.id = id;
         this.name = name;
         this.lng = lng;
@@ -119,11 +119,11 @@ public class Toilet {
         this.avgRating = avgRating;
     }
 
-    public void setShittyness(int shittyness){
-
+    public void setShittyness(double shittyness){
+        this.shittyness = shittyness;
     }
 
-    public int getShittyness(){
+    public double getShittyness(){
         return shittyness;
     }
 }
