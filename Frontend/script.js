@@ -181,10 +181,10 @@ document.addEventListener("DOMContentLoaded", async function () {
                     body: JSON.stringify({
                         toiletId: Number(toiletId),
                         toiletName,
-                        author,
-                        rating,
-                        poop,
-                        description,
+                        author: author,
+                        rating: rating,
+                        sunkRating: poop,
+                        description: description,
                         photo: ""
                     })
                 });
@@ -333,8 +333,8 @@ document.addEventListener("DOMContentLoaded", async function () {
                     return distA - distB;
                 }
                 if (sortWith === 'dankness') {
-                    const valA = parseFloat(toiletA[sortWith]) || 0;
-                    const valB = parseFloat(toiletB[sortWith]) || 0;
+                    const valA = parseFloat(toiletA.shittyness) || 0;
+                    const valB = parseFloat(toiletB.shittyness) || 0;
                     return valB - valA;
                 }
             });
@@ -347,9 +347,9 @@ document.addEventListener("DOMContentLoaded", async function () {
                     <div class="popup-info">
                         <!--<span><b>Kategori:</b> ${toilet.category}</span>-->
                         <!--span><b>Poäng:</b> ${toilet.score}/100</span-->
-                        <!--span><b>Sunkighet:</b> ${toilet.dankness}/100</span-->
+                        <!--span><b>Sunkighet:</b> ${toilet.shittyness}/100</span-->
                         <span><b>Poäng:</b> ${formatScore100FromRating(toilet.rating)}</span>
-                        <span><b>Sunkighet:</b> ${formatDankness100(toilet.dankness)}</span>
+                        <span><b>Sunkighet:</b> ${formatDankness100(toilet.shittyness)}</span>
                         <span><b>Antal toaletter:</b> ${toilet.nbrWcs}</span>
                         <span><b>Avgift:</b> ${toilet.fee !== "" ? toilet.fee : "Gratis"}</span>
                         <span><b>Skötbord:</b> ${toilet.change_table_child > 0 ? "Finns" : "Saknas"}</span>
@@ -428,8 +428,8 @@ document.addEventListener("DOMContentLoaded", async function () {
                     <h4>${toilet.name} ${changingTableIcon}</h4> | <h4>${toilet.distance} m</h4>
                 </div>
                 <small>
-                    ${displayRating} | 
-                    Sunkighet: ${toilet.dankness}
+                    </i> ${displayRating} | 
+                    Sunkighet: ${formatDankness100(toilet.shittyness)}
                     (${reviewCount} reviews)
                 </small>
             `;
