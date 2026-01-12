@@ -219,7 +219,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
             listEl.innerHTML = reviews.map(review => `
             <div class="review-item" style="margin-bottom:8px;">
-                <div><b>${review.author}:</b> Poäng: ${review.rating} || Sunk: ${formatDankness100(toiletId.shittyness)}</div>
+                <div><b>${review.author}:</b> Poäng: ${review.rating} || Sunk: ${review.sunkRating}</div>
                 <div><p>"${review.description}"</p></div>
             </div>
         `).join("");
