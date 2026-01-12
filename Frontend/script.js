@@ -220,7 +220,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
             listEl.innerHTML = reviews.map(review => `
             <div class="review-item" style="margin-bottom:8px;">
-                <div><b>${review.author}</bPoäng: ${review.rating} || Sunk: ${review.sunkRating}</div>
+                <div><b>${review.author}</b> Poäng: ${review.rating} || Sunk: ${review.sunkRating}</div>
                 <div>${review.description}</div>
             </div>
         `).join("");
@@ -346,9 +346,6 @@ document.addEventListener("DOMContentLoaded", async function () {
                     <strong class="popup-title">${toilet.name}</strong>
                     
                     <div class="popup-info">
-                        <!--<span><b>Kategori:</b> ${toilet.category}</span>-->
-                        <!--span><b>Poäng:</b> ${toilet.score}/100</span-->
-                        <!--span><b>Sunkighet:</b> ${toilet.shittyness}/100</span-->
                         <span><b>Poäng:</b> ${formatAvgRating(toilet.avgRating)}</span>
                         <span><b>Sunkighet:</b> ${formatDankness100(toilet.shittyness)}</span>
                         <span><b>Antal toaletter:</b> ${toilet.nbrWcs}</span>
