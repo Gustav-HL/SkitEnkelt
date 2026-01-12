@@ -17,6 +17,8 @@ document.addEventListener("DOMContentLoaded", async function () {
     let currentLng = null;
     let rangeArea;
     let routingActive = null;
+    let selectedPoop = 0;
+
 
     async function getAllToilets() {
         const hasChaningTable = document.getElementById("filterTable")?.checked;
@@ -132,17 +134,17 @@ document.addEventListener("DOMContentLoaded", async function () {
             paintStars(Number(ratingInput.value || 0));
         }
 
-        if (poopPicker && poopInput) {
+        if (poopPicker) {
             poopPicker.addEventListener("click", (ev) => {
                 const target = ev.target.closest(".poop");
                 if (!target) return;
+
                 const val = Number(target.dataset.value);
-                poopInput.value = String(val);
+                selectedPoop = val;
                 paintPoops(val);
             });
 
-            // default
-            paintPoops(Number(poopInput.value || 0));
+            paintPoops(0);
         }
 
         // 1) Ladda och visa reviews direkt när popupen öppnas
@@ -162,14 +164,13 @@ document.addEventListener("DOMContentLoaded", async function () {
 
             const author = wrap.querySelector(".review-author").value.trim();
             const rating = Number(wrap.querySelector(".review-rating").value);
-            const poop = Number(wrap.querySelector(".review-poop").value); // Hämtar från dolt fält
+            const shittyness = selectedPoop; // Hämtar från dolt fält
             const description = wrap.querySelector(".review-description").value.trim();
-
             if (!rating || rating < 1) {
                 statusEl.textContent = "Välj ett stjärnbetyg först ⭐";
                 return;
             }
-            if (!poop || poop < 1) {
+            if (!shittyness || shittyness < 1) {
                 statusEl.textContent = "Välj hur sunkigt det är 💩";
                 return;
             }
@@ -183,7 +184,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                         toiletName,
                         author,
                         rating,
-                        poop,
+                        shittyness,
                         description,
                         photo: ""
                     })
@@ -281,7 +282,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         if (!r || r <= 0) return "Inga betyg ännu";
         const score100 = Math.round(r * 20);
         return `${score100}/100`;
-        }
+    }
 
     function formatDankness100(danknessValue) {
         const d = numOrNull(danknessValue);
@@ -344,10 +345,10 @@ document.addEventListener("DOMContentLoaded", async function () {
                     
                     <div class="popup-info">
                         <!--<span><b>Kategori:</b> ${toilet.category}</span>-->
-                        <!--span><b>Poäng:</b> ${toilet.score}/100</span-->
+                        <!--span><b>Poäng:</b> ${toilet.avgRating}/100</span-->
                         <!--span><b>Sunkighet:</b> ${toilet.dankness}/100</span-->
-                        <span><b>Poäng:</b> ${formatScore100FromRating(toilet.rating)}</span>
-                        <span><b>Sunkighet:</b> ${formatDankness100(toilet.dankness)}</span>
+                        <span><b>Poäng:</b> ${toilet.avgRating}</span>
+                        <span><b>Sunkighet:</b> ${(toilet.shittyness)}</span>
                         <span><b>Antal toaletter:</b> ${toilet.nbrWcs}</span>
                         <span><b>Avgift:</b> ${toilet.fee !== "" ? toilet.fee : "Gratis"}</span>
                         <span><b>Skötbord:</b> ${toilet.change_table_child > 0 ? "Finns" : "Saknas"}</span>

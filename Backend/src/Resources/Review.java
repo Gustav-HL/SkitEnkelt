@@ -7,7 +7,7 @@ public class Review {
     private int toiletId;
     private String toiletName;
     private double rating;
-    private double sunkRating;
+    private double shittyness;
     private String description;
     private String photo;
 
@@ -18,7 +18,8 @@ public class Review {
         this.toiletId = toiletId;
         this.toiletName = toalettNamn;
         this.rating = rating;
-        this.sunkRating = poop;
+        this.shittyness = poop;
+        System.out.println("shittyness in this object: " + poop);
         this.description = description;
         this.photo = photo;
     }
@@ -87,11 +88,11 @@ public class Review {
     }
 
     public double getShittyness(){
-        return sunkRating;
+        return shittyness;
     }
 
     public void setShittyness(double shittyness){
-        this.sunkRating = shittyness;
+        this.shittyness = shittyness;
     }
 
 }

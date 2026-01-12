@@ -134,6 +134,7 @@ public class ToiletHandler {
     }
 
     private double getShittyNess(int toiletId) {
+        //System.out.println(reviewsCollection.getAverageShittyness(toiletId));
     return reviewsCollection.getAverageShittyness(toiletId);}
 
     public void addReview(Context ctx) throws FileNotFoundException {
@@ -164,7 +165,7 @@ public class ToiletHandler {
 
 
 
-
+        reviewsCollection.getAllShittyness();
         ctx.status(201).json(incoming);
     }
 
