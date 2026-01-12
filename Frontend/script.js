@@ -437,6 +437,14 @@ document.addEventListener("DOMContentLoaded", async function () {
         });
     }
 
+    function setStartMarker(latlng) {
+        currentLat = latlng.lat;
+        currentLng = latlng.lng;
+
+        userMarker ||= L.marker(latlng).addTo(map);
+        userMarker.setLatLng(latlng);
+    }
+
     function markerMapPlacement(event) {
         const markerFilter = document.getElementById("markerFilter")?.checked;
         // Checks if marker checkbox is False and stops function in that case 
@@ -455,7 +463,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         // Creates or updates a area around the marker
         rangeArea ||= L.circle(event.latlng, {
             color: '#a0522d',
-            fillColor: '#a0522d',
+            fillColor: '#e5dad5',
             fillOpacity: 0.2,
             weight: 1
         }).addTo(map);
@@ -483,21 +491,28 @@ document.addEventListener("DOMContentLoaded", async function () {
         }
         else {
             if (rangeContainer) rangeContainer.style.display = "block";
+
+            const rangeSlider = document.getElementById("rangeSlider");
+            const rangerNumber = document.getElementById("rangeNumber");
+
+            if (rangeSlider) {
+                rangeSlider.value = 500;
+                if (rangerNumber) {
+                    rangerNumber.textContent = 500;
+                }
+            }
         }
     });
 
     map.on('click', markerMapPlacement);
 
     map.on('locationfound', function (e) {
-        currentLat = e.latlng.lat;
-        currentLng = e.latlng.lng;
-        console.log(currentLng, currentLat)
-
+        setStartMarker(e.latlng);
         getAllToilets();
     });
 
-    map.on('locationerror', function (e) {
-        console.warn("GPS-lokalisering misslyckades: " + e.message);
+    map.on('locationerror', function () {
+        setStartMarker(map.getCenter());
         getAllToilets();
     });
 
