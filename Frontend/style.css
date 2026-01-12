@@ -477,3 +477,9 @@ input[type="range"] {
     height: 100vh;
     z-index: 1;
 }
+
+.toilet-card-icon{
+    margin-left: 8px;
+    font-size: 14px;
+    opacity: 0.9;
+}
