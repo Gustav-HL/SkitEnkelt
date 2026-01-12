@@ -95,11 +95,11 @@ document.addEventListener("DOMContentLoaded", async function () {
         const form = wrap.querySelector(".popup-review-form");
         const listEl = wrap.querySelector(".popup-review-list");
         const statusEl = wrap.querySelector(".review-status");
-        // --- STAR & POOP PICKERS ---
+
         const starPicker = wrap.querySelector(".star-picker");
         const poopPicker = wrap.querySelector(".poop-picker");
-        const ratingInput = wrap.querySelector(".review-rating"); // hidden
-        const poopInput = wrap.querySelector(".review-poop");     // hidden
+        const ratingInput = wrap.querySelector(".review-rating"); 
+        const poopInput = wrap.querySelector(".review-poop");    
 
         function paintStars(value) {
             const stars = starPicker.querySelectorAll(".star");
@@ -128,7 +128,6 @@ document.addEventListener("DOMContentLoaded", async function () {
                 paintStars(val);
             });
 
-            // default
             paintStars(Number(ratingInput.value || 0));
         }
 
@@ -141,28 +140,27 @@ document.addEventListener("DOMContentLoaded", async function () {
                 paintPoops(val);
             });
 
-            // default
             paintPoops(Number(poopInput.value || 0));
         }
 
-        // 1) Ladda och visa reviews direkt när popupen öppnas
+        // Ladda och visa reviews direkt när popupen öppnas
         await loadReviews(toiletId, listEl);
 
-        // 2) Toggle: visa/dölj formulär
+        // Toggle: visa/dölj formulär
         toggleBtn.onclick = (ev) => {
             ev.preventDefault();
             form.style.display = (form.style.display === "none") ? "block" : "none";
             statusEl.textContent = "";
         };
 
-        // 3) Skicka review
+        // Skicka review
         form.onsubmit = async (ev) => {
             ev.preventDefault();
             statusEl.textContent = "Skickar...";
 
             const author = wrap.querySelector(".review-author").value.trim();
             const rating = Number(wrap.querySelector(".review-rating").value);
-            const poop = Number(wrap.querySelector(".review-poop").value); // Hämtar från dolt fält
+            const poop = Number(wrap.querySelector(".review-poop").value); 
             const description = wrap.querySelector(".review-description").value.trim();
 
             if (!rating || rating < 1) {
@@ -204,9 +202,9 @@ document.addEventListener("DOMContentLoaded", async function () {
             }
             getAllToilets();
         }; // Stänger form.onsubmit
-    }); // Stänger map.on("popupopen")
+    }); // Stänger map.on
 
-    // Hjälpfunktion: hämta & rendera reviews
+    // Hjälpfunktion: hämta o rendera reviews
     async function loadReviews(toiletId, listEl) {
         listEl.textContent = "Laddar reviews...";
 
@@ -221,7 +219,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
             listEl.innerHTML = reviews.map(review => `
             <div class="review-item" style="margin-bottom:8px;">
-                <div><b>${review.author}:</b> Poäng: ${review.rating} || Sunk: ${review.sunkRating}</div>
+                <div><b>${review.author}:</b> Poäng: ${review.rating} || Sunk: ${formatDankness100(toilet.shittyness)}</div>
                 <div><p>"${review.description}"</p></div>
             </div>
         `).join("");
@@ -231,7 +229,6 @@ document.addEventListener("DOMContentLoaded", async function () {
             listEl.textContent = "Kunde inte ladda reviews :(";
         }
     }
-
 
     // Function to move the map and open a popup when users select a toilet
     function selectToilet(toilet, listElement) {
