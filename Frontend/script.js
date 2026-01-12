@@ -276,11 +276,12 @@ document.addEventListener("DOMContentLoaded", async function () {
         return Number.isFinite(n) ? n : null;
     }
 
-    function formatScore100FromRating(rating5) {
+    function formatAvgRating(rating5) {
         const r = numOrNull(rating5);
         if (!r || r <= 0) return "Inga betyg ännu";
-        const score100 = Math.round(r * 20);
-        return `${score100}/100`;
+        //const score100 = Math.round(r * 20);
+        //return `${score100}/100`;
+        return r.toFixed(1).replace(".", ",");
     }
 
     function formatDankness100(danknessValue) {
@@ -348,7 +349,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                         <!--<span><b>Kategori:</b> ${toilet.category}</span>-->
                         <!--span><b>Poäng:</b> ${toilet.score}/100</span-->
                         <!--span><b>Sunkighet:</b> ${toilet.shittyness}/100</span-->
-                        <span><b>Poäng:</b> ${formatScore100FromRating(toilet.rating)}</span>
+                        <span><b>Poäng:</b> ${formatAvgRating(toilet.avgRating)}</span>
                         <span><b>Sunkighet:</b> ${formatDankness100(toilet.shittyness)}</span>
                         <span><b>Antal toaletter:</b> ${toilet.nbrWcs}</span>
                         <span><b>Avgift:</b> ${toilet.fee !== "" ? toilet.fee : "Gratis"}</span>
