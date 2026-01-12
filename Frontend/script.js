@@ -202,6 +202,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                 console.error(err);
                 statusEl.textContent = "Något gick fel när review skulle sparas 💩 ";
             }
+            getAllToilets();
         }; // Stänger form.onsubmit
     }); // Stänger map.on("popupopen")
 
