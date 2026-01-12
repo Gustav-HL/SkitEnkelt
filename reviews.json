@@ -311,6 +311,16 @@
       "sunkRating": 5.0,
       "description": "ab",
       "photo": ""
+    },
+    {
+      "id": 32,
+      "author": "Johanna",
+      "toiletId": 22,
+      "toiletName": "Station Triangeln Norra (vid kyrkan)",
+      "rating": 5.0,
+      "sunkRating": 3.0,
+      "description": "Topp",
+      "photo": ""
     }
   ]
 }
