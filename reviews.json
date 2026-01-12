@@ -281,6 +281,16 @@
       "sunkRating": 3.0,
       "description": "asd",
       "photo": ""
+    },
+    {
+      "id": 29,
+      "author": "Glen",
+      "toiletId": 46,
+      "toiletName": "R.F. Bergs plats",
+      "rating": 5.0,
+      "sunkRating": 5.0,
+      "description": "qwe",
+      "photo": ""
     }
   ]
 }
