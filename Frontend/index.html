@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="sv">
+
 <head>
     <meta charset="UTF-8">
     <title>Toalettkartan Malmö</title>
@@ -18,59 +19,65 @@
 
 <body>
     <div id="logotype">
-    <h1>Skit<span class="dots">...</span></h1>
-    <h1>ENKELT</h1>
-</div>
+        <h1>Skit<span class="dots">...</span></h1>
+        <h1>ENKELT</h1>
+    </div>
     <div id="sidebar">
         <div class="sort-tab-group">
-            <button id="sortName" class="tab-buttons active">
+            <button id="sortName" class="tab-buttons active" title="Sorterar toaletter efter avstånd från din position">
                 <i class="fa-solid fa-toilet"></i> Distans.
             </button>
-            <button id="sortScore" class="tab-buttons">
+
+            <button id="sortScore" class="tab-buttons" title="Sorterar efter högst betyg (Greatest Shits!)">
                 <i class="fa-solid fa-crown"></i> Greatest Shits!
             </button>
-            <button id="sortDankness" class="tab-buttons">
+
+            <button id="sortDankness" class="tab-buttons" title="Visar de sunkigaste toaletterna först">
                 <i class="fa-solid fa-dumpster"></i> Sunkigaste?
             </button>
         </div>
         <div class="search-section">
             <input type="text" id="toiletSearch" placeholder="Sök efter toalett...">
         </div>
-            <div class="content">
-                <div class="filters">
-                    <div class="icon-row">
-                        <label class="icon-filter">
-                            <input type="checkbox" id="filterTable" autocomplete="off" hidden>
-                            <i class="fa-solid fa-baby-carriage"></i>
-                            <span>Skötbord</span>
-                        </label>
-                        <label class="icon-filter">
-                            <input type="checkbox" id="markerFilter" autocomplete="off" hidden>
-                            <i class="fa-solid fa-location-crosshairs"></i>
-                            <span>Sök i område</span>
-                        </label>
-                        <label class="icon-filter">
-                            <input type="checkbox" id="routingToggle" autocomplete="off" hidden>
-                            <i class="fa-solid fa-route"></i>
-                            <span>Vägbeskrivning</span>
-                        </label>
-                    </div>
-                    <div class="slider-container" id="rangeSliderContainer" style="display: none;">
-                        <label for="rangeSlider">Sökradie runt markör: <span class="slider-value"><span id="rangeNumber">1500</span> m</span></label>
-                        <div class="slider-group">
-                            <input type="range" id="rangeSlider" min="100" max="8000" value="200000" step="100">
-                        </div>
-                    </div>
+        <div class="content">
+            <div class="filters">
+                <div class="icon-row">
+                    <label class="icon-filter" title="Begränsar sökningen till valt område (klicka ut en punkt på kartan)">
+                        <input type="checkbox" id="markerFilter" hidden>
+                        <i class="fa-solid fa-location-crosshairs"></i>
+                        <span>Sök i område</span>
+                    </label>
 
-                    <div class="slider-container">
-                        <label for="filterAmount">Antal tillgängliga toaletter: <span class="slider-value"><span id="toiletAmount">1</span> st</span></label>
-                        <div class="slider-group">
-                            <input type="range" id="filterAmount" min="1" max="8" value="1" step="1">
-                        </div>
+                    <label class="icon-filter" title="Slå på vägbeskrivning till vald toalett">
+                        <input type="checkbox" id="routingToggle" hidden>
+                        <i class="fa-solid fa-route"></i>
+                        <span>Vägbeskrivning</span>
+                    </label>
+
+                    <label class="icon-filter" title="Visar endast toaletter med skötbord">
+                        <input type="checkbox" id="filterTable" hidden>
+                        <i class="fa-solid fa-baby-carriage"></i>
+                        <span>Skötbord</span>
+                    </label>
+                </div>
+                <div class="slider-container" id="rangeSliderContainer" style="display: none;">
+                    <label for="rangeSlider">Sökradie runt markör: <span class="slider-value"><span
+                                id="rangeNumber">1500</span> m</span></label>
+                    <div class="slider-group">
+                        <input type="range" id="rangeSlider" min="100" max="8000" value="200000" step="100">
                     </div>
                 </div>
-                <h3 id="toilet-amount">Antal Hittade Toaletter: <span id="toilet-count">0</span></h3>
+
+                <div class="slider-container">
+                    <label for="filterAmount">Antal tillgängliga toaletter: <span class="slider-value"><span
+                                id="toiletAmount">1</span> st</span></label>
+                    <div class="slider-group">
+                        <input type="range" id="filterAmount" min="1" max="8" value="1" step="1">
+                    </div>
+                </div>
             </div>
+            <h3 id="toilet-amount">Antal Hittade Toaletter: <span id="toilet-count">0</span></h3>
+        </div>
         <ul id="toa-list"></ul>
     </div>
 
