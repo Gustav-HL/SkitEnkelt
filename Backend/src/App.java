@@ -39,7 +39,7 @@ public class App {
         //Annars händer ingenting förutom en liten utskrift i terminalen
         try {
             if (Desktop.isDesktopSupported()) {
-                Desktop.getDesktop().browse(new URI("http://localhost:7070/test.html"));
+                Desktop.getDesktop().browse(new URI("http://localhost:7070/index.html"));
             }
         } catch (Exception e) {
             System.out.println("Starta html-filen manuellt.");
