@@ -425,6 +425,10 @@ document.addEventListener("DOMContentLoaded", async function () {
         // Updates number next to slider
         rangeSlider.addEventListener("input", function () {
             rangerNumber.textContent = this.value;
+
+            if (rangeArea) {
+                rangeArea.setRadius(Number(this.value));
+            }
         });
 
         //Calls backend handler
@@ -456,7 +460,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             weight: 1
         }).addTo(map);
 
-        // Updatse the values
+        // Updates the values
         rangeArea.setLatLng(event.latlng).setRadius(rangeValue);
         getAllToilets();
     }
