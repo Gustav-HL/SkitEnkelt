@@ -42,7 +42,8 @@
         <div class="content">
             <div class="filters">
                 <div class="icon-row">
-                    <label class="icon-filter" title="Begränsar sökningen till valt område (klicka ut en punkt på kartan)">
+                    <label class="icon-filter"
+                        title="Begränsar sökningen till valt område (klicka ut en punkt på kartan)">
                         <input type="checkbox" id="markerFilter" hidden>
                         <i class="fa-solid fa-location-crosshairs"></i>
                         <span>Sök i område</span>
@@ -94,6 +95,39 @@
     <!-- lokal JS -->
     <script src="script.js"></script>
 
+    <div id="modal-overlay" class="hidden"></div>
+
+    <div id="review-modal" class="hidden">
+        <h3>Recensera toalett</h3>
+
+        <form id="reviewForm">
+            <label>
+                Betyg
+                <input type="number" min="1" max="5" id="rating" required>
+            </label>
+
+            <label>
+                Kommentar
+                <textarea id="comment"></textarea>
+            </label>
+
+            <div class="modal-actions">
+                <button type="submit">Skicka</button>
+                <button type="button" id="closeReview">Avbryt</button>
+            </div>
+        </form>
+    </div>
+
+    <div id="myModal" class="modal">
+
+        <!-- Modal content -->
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <p>Some text in the Modal..</p>
+        </div>
+
+    </div>
+    
 </body>
 
 </html>
