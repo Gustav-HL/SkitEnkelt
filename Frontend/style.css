@@ -4,7 +4,6 @@
     --primary-brown: #795548;
     --primary-dark: #5d4037;
     --primary-light: #d7ccc8;
-
     --bg-card: #ffffff;
     --bg-card-active: #fdfaf7;
     --bg-tab-inactive: #f0f0f0;
@@ -14,6 +13,7 @@
     --that-blue: #2965a5;
     --bg-glass: rgba(255, 255, 255, 0.7);
     --border-glass: rgba(255, 255, 255, 0.4);
+    --bg-sidebar: #f6f4f2;
 }
 
 body,
@@ -32,7 +32,7 @@ button,
 label,
 td,
 th {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
 }
 
@@ -56,7 +56,7 @@ body {
     display: flex;
     height: 100vh;
     overflow: hidden;
-    background-color: var(--bg-sidebar);
+    background-color: var(--bg-sidebar, #f6f4f2);
 }
 
 /* Logotype in right corner */
@@ -92,15 +92,12 @@ body {
     width: 23%;
     min-width: 350px;
     z-index: 1000;
-
     background: var(--bg-glass);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-
     border: 1px solid var(--border-glass);
     border-radius: 10px;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
-
     display: flex;
     flex-direction: column;
     overflow-y: auto;
@@ -140,17 +137,14 @@ body {
     background-color: rgba(255, 255, 255, 0.01);
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
-
     font-size: 0.85rem;
     font-weight: 600;
     color: var(--text-main);
-
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 6px;
     border-right: 1px solid var(--border-glass);
-
     position: relative;
     z-index: 10;
 }
@@ -177,7 +171,6 @@ body {
     background: transparent;
     border-bottom: 1px solid var(--border-glass);
 }
-
 
 #toiletSearch {
     width: 100%;
@@ -215,19 +208,18 @@ body {
     opacity: 1;
 }
 
-/* Filters/layout (previously nested, now valid CSS) */
+/* Filters/layout*/
 .filters {
     width: 290px;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     gap: 15px;
-    align-items: left;
-    padding: 0;
+    align-items: flex-start;
+    padding: 15px 10px;
     margin-left: auto;
     margin-right: auto;
     min-height: 0;
-    padding: 15px 10px;
 }
 
 .icon-row {
@@ -248,7 +240,6 @@ body {
     background: var(--bg-card);
     border-radius: 8px;
     cursor: pointer;
-    transition: transform 0.2s;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
     transition: transform 0.2s, box-shadow 0.2s, background-color 0.2s;
     border: 1px solid rgba(0, 0, 0, 0.03);
@@ -280,19 +271,12 @@ input[type="range"] {
     white-space: nowrap;
 }
 
-.icon-filter span {
-    font-size: 0.65rem;
-    text-align: center;
-    width: 100%;
-    white-space: nowrap;
-    margin-top: 6px;
-}
-
 .icon-filter i {
     font-size: 1.4rem;
     margin-bottom: 2px;
 }
 
+/* ✅ keep only one definition */
 .icon-filter span {
     font-size: 0.7rem;
     color: #888;
@@ -302,19 +286,19 @@ input[type="range"] {
     margin-top: 6px;
 }
 
-.icon-filter input:checked+i {
+.icon-filter input:checked + i {
     filter: grayscale(0%);
 }
 
-#filterTable:checked+i {
+#filterTable:checked + i {
     color: #d35e98;
 }
 
-#markerFilter:checked+i {
+#markerFilter:checked + i {
     color: #2965a5;
 }
 
-#routingToggle:checked+i {
+#routingToggle:checked + i {
     color: #a0522d;
 }
 
@@ -337,9 +321,11 @@ input[type="range"] {
     border-top: 1px solid var(--primary-light);
     width: 90%;
 }
-#toilet-count{
+
+#toilet-count {
     color: var(--that-blue);
 }
+
 /* Generated list of toilets */
 #toa-list {
     padding-left: 0;
@@ -478,7 +464,7 @@ input[type="range"] {
     z-index: 1;
 }
 
-.toilet-card-icon{
+.toilet-card-icon {
     margin-left: 8px;
     font-size: 14px;
     opacity: 0.9;
