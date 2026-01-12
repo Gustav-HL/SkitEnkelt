@@ -281,7 +281,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         if (!r || r <= 0) return "Inga betyg ännu";
         const score100 = Math.round(r * 20);
         return `${score100}/100`;
-        }
+    }
 
     function formatDankness100(danknessValue) {
         const d = numOrNull(danknessValue);
@@ -306,6 +306,8 @@ document.addEventListener("DOMContentLoaded", async function () {
         const filtered = toilets.filter(t =>
             t.name.toLowerCase().includes(searchTerm)
         );
+
+
 
         // Updates number showing amount of toilets found
         if (countContainer) {
@@ -416,12 +418,17 @@ document.addEventListener("DOMContentLoaded", async function () {
             const displayRating = toilet.avgRating > 0 ? toilet.avgRating.toFixed(1) : "Inga betyg";
             const reviewCount = toilet.reviews ? toilet.reviews.length : 0;
 
+            const hasChangingTable = Number(toilet.change_table_child) > 0;
+            const changingTableIcon = hasChangingTable
+                ? `<i class="fa-solid fa-baby-carriage toilet-card-icon" title="Skötbord finns" aria-label="Skötbord finns"></i>`
+                : "";
+
             li.innerHTML = `
                 <div>
-                    <h4>${toilet.name}</h4> | <h4>${toilet.distance} m</h4>
+                    <h4>${toilet.name} ${changingTableIcon}</h4> | <h4>${toilet.distance} m</h4>
                 </div>
                 <small>
-                    </i> ${displayRating} | 
+                    ${displayRating} | 
                     Sunkighet: ${toilet.dankness}
                     (${reviewCount} reviews)
                 </small>
