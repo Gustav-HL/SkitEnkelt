@@ -287,10 +287,10 @@ document.addEventListener("DOMContentLoaded", async function () {
         if (!d || d <= 0) return "Inga betyg ännu";
 
         // Om backend skickar 1–5 → konvertera till /100
-        if (d <= 5) return `${Math.round(d * 20)}/100`;
+        if (d <= 5) return `${Math.round(d * 20)}%`;
 
         // Om backend redan skickar 0–100
-        return `${Math.round(d)}/100`;
+        return `${Math.round(d)}%`;
     }
 
 
