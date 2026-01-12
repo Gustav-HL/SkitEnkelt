@@ -422,7 +422,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                 </div>
                 <small>
                     </i> ${displayRating} | 
-                    Sunkighet: ${toilet.shittyness}
+                    Sunkighet: ${formatDankness100(toilet.shittyness)}
                     (${reviewCount} reviews)
                 </small>
             `;
