@@ -281,7 +281,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         if (!r || r <= 0) return "Inga betyg ännu";
         //const score100 = Math.round(r * 20);
         //return `${score100}/100`;
-        return r.toFixed(1).replace(".", ",");
+        return `${r.toFixed(1).replace(".", ",")} / 5`
     }
 
     function formatDankness100(danknessValue) {
