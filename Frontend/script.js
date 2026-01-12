@@ -220,8 +220,8 @@ document.addEventListener("DOMContentLoaded", async function () {
 
             listEl.innerHTML = reviews.map(review => `
             <div class="review-item" style="margin-bottom:8px;">
-                <div><b>${review.author}</b> Poäng: ${review.rating} || Sunk: ${review.sunkRating}</div>
-                <div>${review.description}</div>
+                <div><b>${review.author}:</b> Poäng: ${review.rating} || Sunk: ${review.sunkRating}</div>
+                <div><p>"${review.description}"</p></div>
             </div>
         `).join("");
 
@@ -349,7 +349,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                         <span><b>Poäng:</b> ${formatAvgRating(toilet.avgRating)}</span>
                         <span><b>Sunkighet:</b> ${formatDankness100(toilet.shittyness)}</span>
                         <span><b>Antal toaletter:</b> ${toilet.nbrWcs}</span>
-                        <span><b>Avgift:</b> ${toilet.fee !== "" ? toilet.fee : "Gratis"}</span>
+                        <span><b>Avgift:</b> ${toilet.fee ? toilet.fee : "Gratis"}</span>
                         <span><b>Skötbord:</b> ${toilet.change_table_child > 0 ? "Finns" : "Saknas"}</span>
                     </div>
                         <!-- REVIEW-DEL -->
@@ -388,7 +388,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                             <button type="submit">Skicka</button>
                             <div class="review-status" style="margin-top:6px;"></div>
                         </form>
-
+                    <h3 class="review-header"> Resensioner: </h3>
                     <div class="popup-review-list" style="margin-top:10px;"></div>
                     </div>
                 </div>`;

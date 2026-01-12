@@ -423,6 +423,16 @@ input[type="range"] {
     background-color: var(--bg-card-active);
     border-radius: 8px;
     border: 1px solid var(--primary-brown);
+    max-height: 300px; /* Din satta höjd */
+    width: 300px;
+    overflow-y: auto;  /* Aktiverar vertikal scroll */
+    overflow-x: hidden; /* Förhindrar scroll i sidled */
+}
+
+/* Valfritt: Justera marginaler på innehållet så det ser snyggare ut vid scroll */
+.leaflet-popup-content {
+    margin: 15px;
+    line-height: 1.5;
 }
 
 .leaflet-popup-tip {
@@ -433,7 +443,12 @@ input[type="range"] {
     color: var(--primary-brown) !important;
     padding: 5px !important;
 }
-
+.review-header{
+    margin: 20px 0 0 0;
+}
+.review-item{
+    border-bottom: 1px solid #d7ccc8;
+}
 .marker-box {
     display: flex;
     justify-content: center;
