@@ -319,7 +319,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                     <strong class="popup-title">${toilet.name}</strong>
                     
                     <div class="popup-info">
-                        <span><b>Kategori:</b> ${toilet.category}</span>
+                        <!--<span><b>Kategori:</b> ${toilet.category}</span>-->
                         <span><b>Poäng:</b> ${toilet.score}/100</span>
                         <span><b>Sunkighet:</b> ${toilet.dankness}/100</span>
                         <span><b>Antal toaletter:</b> ${toilet.nbrWcs}</span>
