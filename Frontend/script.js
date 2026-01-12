@@ -289,10 +289,10 @@ document.addEventListener("DOMContentLoaded", async function () {
         if (!d || d <= 0) return "Inga betyg ännu";
 
         // Om backend skickar 1–5 → konvertera till /100
-        if (d <= 5) return `${Math.round(d * 20)}/100`;
+        if (d <= 5) return `${Math.round(d * 20)}%`;
 
         // Om backend redan skickar 0–100
-        return `${Math.round(d)}/100`;
+        return `${Math.round(d)}`;
     }
 
 
@@ -331,7 +331,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                     const distB = parseFloat(toiletB.distance) || 0;
                     return distA - distB;
                 }
-                if (sortWith === 'dankness') {
+                if (sortWith === 'shittyness') {
                     const valA = parseFloat(toiletA[sortWith]) || 0;
                     const valB = parseFloat(toiletB[sortWith]) || 0;
                     return valB - valA;
@@ -346,11 +346,10 @@ document.addEventListener("DOMContentLoaded", async function () {
                     <div class="popup-info">
                         <!--<span><b>Kategori:</b> ${toilet.category}</span>-->
                         <!--span><b>Poäng:</b> ${toilet.avgRating}/100</span-->
-                        <!--span><b>Sunkighet:</b> ${toilet.dankness}/100</span-->
-                        <span><b>Poäng:</b> ${toilet.avgRating}</span>
-                        <span><b>Sunkighet:</b> ${(toilet.shittyness)}</span>
+                        <!--span><b>Sunkighet:</b> ${toilet.shittyness}/100</span-->
+                        <span><b>Rating:</b> ${toilet.avgRating}/5</span>
+                        <span><b>Sunkighet:</b> ${formatDankness100(toilet.shittyness)}</span>
                         <span><b>Antal toaletter:</b> ${toilet.nbrWcs}</span>
-                        <span><b>Avgift:</b> ${toilet.fee !== "" ? toilet.fee : "Gratis"}</span>
                         <span><b>Skötbord:</b> ${toilet.change_table_child > 0 ? "Finns" : "Saknas"}</span>
                     </div>
                         <!-- REVIEW-DEL -->
