@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     let currentLng = null;
     let rangeArea;
     let routingActive = null;
-
+    // Fetches filtered toilet data from the backend depending on user input
     async function getAllToilets() {
         const hasChaningTable = document.getElementById("filterTable")?.checked;
         const freeEntry = document.getElementById("filterFree")?.checked;
@@ -98,8 +98,8 @@ document.addEventListener("DOMContentLoaded", async function () {
 
         const starPicker = wrap.querySelector(".star-picker");
         const poopPicker = wrap.querySelector(".poop-picker");
-        const ratingInput = wrap.querySelector(".review-rating"); 
-        const poopInput = wrap.querySelector(".review-poop");    
+        const ratingInput = wrap.querySelector(".review-rating");
+        const poopInput = wrap.querySelector(".review-poop");
 
         function paintStars(value) {
             const stars = starPicker.querySelectorAll(".star");
@@ -160,7 +160,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
             const author = wrap.querySelector(".review-author").value.trim();
             const rating = Number(wrap.querySelector(".review-rating").value);
-            const poop = Number(wrap.querySelector(".review-poop").value); 
+            const poop = Number(wrap.querySelector(".review-poop").value);
             const description = wrap.querySelector(".review-description").value.trim();
 
             if (!rating || rating < 1) {
@@ -269,32 +269,9 @@ document.addEventListener("DOMContentLoaded", async function () {
         routingActive = true;
     }
 
-    function numOrNull(x) {
-        const n = Number(x);
-        return Number.isFinite(n) ? n : null;
-    }
 
-    function formatAvgRating(rating5) {
-        const r = numOrNull(rating5);
-        if (!r || r <= 0) return "Inga betyg ännu";
-        //const score100 = Math.round(r * 20);
-        //return `${score100}/100`;
-        return `${r.toFixed(1).replace(".", ",")} / 5`
-    }
-
-    function formatDankness100(danknessValue) {
-        const d = numOrNull(danknessValue);
-        if (!d || d <= 0) return "Inga betyg ännu";
-
-        // Om backend skickar 1–5 → konvertera till /100
-        if (d <= 5) return `${Math.round(d * 20)}%`;
-
-        // Om backend redan skickar 0–100
-        return `${Math.round(d)}%`;
-    }
-
-
-    // Function to sort and show sidebar list
+    // Function to filter, sort and show sidebar list
+    // Also renders the markers in the map and render popup on clicking a marker
     function sidebarContent(sortWith = 'id') {
         const listContainer = document.getElementById("toa-list");
         const countContainer = document.getElementById("toilet-count");
@@ -305,8 +282,6 @@ document.addEventListener("DOMContentLoaded", async function () {
         const filtered = toilets.filter(t =>
             t.name.toLowerCase().includes(searchTerm)
         );
-
-
 
         // Updates number showing amount of toilets found
         if (countContainer) {
@@ -465,7 +440,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             getAllToilets();
         });
     }
-
+    //
     function setStartMarker(latlng) {
         currentLat = latlng.lat;
         currentLng = latlng.lng;
@@ -473,7 +448,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         userMarker ||= L.marker(latlng).addTo(map);
         userMarker.setLatLng(latlng);
     }
-
+    // Places a marker with a search radius on clicking the map
     function markerMapPlacement(event) {
         const markerFilter = document.getElementById("markerFilter")?.checked;
         // Checks if marker checkbox is False and stops function in that case 
@@ -519,6 +494,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             getAllToilets();
         }
         else {
+            // Range slider hidden by default
             if (rangeContainer) rangeContainer.style.display = "block";
 
             const rangeSlider = document.getElementById("rangeSlider");
@@ -532,19 +508,19 @@ document.addEventListener("DOMContentLoaded", async function () {
             }
         }
     });
-
+    // Leaflet funktion to trigger on click
     map.on('click', markerMapPlacement);
-
-    map.on('locationfound', function (e) {
-        setStartMarker(e.latlng);
+    //  Handles found position placing marker and getting the toilet data
+    map.on('locationfound', function (event) {
+        setStartMarker(event.latlng);
         getAllToilets();
     });
-
+    // Manages if finding position fails and places marker on map center
     map.on('locationerror', function () {
         setStartMarker(map.getCenter());
         getAllToilets();
     });
-
+    // Leaflet function to set map view and zoom in to user position
     map.locate({ setView: true, maxZoom: 14 });
 
     // The searchbar event listner only trigers if a value is input in html
@@ -590,3 +566,26 @@ buttons.forEach(button => {
 
     });
 });
+function numOrNull(x) {
+    const n = Number(x);
+    return Number.isFinite(n) ? n : null;
+}
+
+function formatAvgRating(rating5) {
+    const r = numOrNull(rating5);
+    if (!r || r <= 0) return "Inga betyg ännu";
+    //const score100 = Math.round(r * 20);
+    //return `${score100}/100`;
+    return `${r.toFixed(1).replace(".", ",")} / 5`
+}
+
+function formatDankness100(danknessValue) {
+    const d = numOrNull(danknessValue);
+    if (!d || d <= 0) return "Inga betyg ännu";
+
+    // Om backend skickar 1–5 → konvertera till /100
+    if (d <= 5) return `${Math.round(d * 20)}%`;
+
+    // Om backend redan skickar 0–100
+    return `${Math.round(d)}%`;
+}
