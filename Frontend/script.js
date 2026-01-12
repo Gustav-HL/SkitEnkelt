@@ -63,10 +63,9 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
 
     let toilets = [];
+
     // Fetch Data from backend
-
     // async function rateAToilet() {
-
     // const options = {
     //     method: "POST",
     //     headers: {
@@ -79,6 +78,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     // }
 
     // Dict stores markers by id 
+
     const markerDict = {};
 
     map.on("popupopen", async (e) => {
@@ -127,11 +127,9 @@ document.addEventListener("DOMContentLoaded", async function () {
                 ratingInput.value = String(val);
                 paintStars(val);
             });
-
             // default
             paintStars(Number(ratingInput.value || 0));
         }
-
         if (poopPicker && poopInput) {
             poopPicker.addEventListener("click", (ev) => {
                 const target = ev.target.closest(".poop");
@@ -140,26 +138,22 @@ document.addEventListener("DOMContentLoaded", async function () {
                 poopInput.value = String(val);
                 paintPoops(val);
             });
-
             // default
             paintPoops(Number(poopInput.value || 0));
         }
 
         // 1) Ladda och visa reviews direkt när popupen öppnas
         await loadReviews(toiletId, listEl);
-
         // 2) Toggle: visa/dölj formulär
         toggleBtn.onclick = (ev) => {
             ev.preventDefault();
             form.style.display = (form.style.display === "none") ? "block" : "none";
             statusEl.textContent = "";
         };
-
         // 3) Skicka review
         form.onsubmit = async (ev) => {
             ev.preventDefault();
             statusEl.textContent = "Skickar...";
-
             const author = wrap.querySelector(".review-author").value.trim();
             const rating = Number(wrap.querySelector(".review-rating").value);
             const poop = Number(wrap.querySelector(".review-poop").value); // Hämtar från dolt fält
@@ -173,7 +167,6 @@ document.addEventListener("DOMContentLoaded", async function () {
                 statusEl.textContent = "Välj hur sunkigt det är 💩";
                 return;
             }
-
             try {
                 const res = await fetch("http://localhost:7070/reviews", {
                     method: "POST",
@@ -189,7 +182,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                     })
                 });
 
-                if (!res.ok) throw new Error("Backend svarade inte OK");
+                if (!res.ok) throw new Error("Backend svarade icke");
 
                 statusEl.textContent = "Tack! Review sparad ";
                 form.reset();
@@ -231,7 +224,6 @@ document.addEventListener("DOMContentLoaded", async function () {
             listEl.textContent = "Kunde inte ladda reviews :(";
         }
     }
-
 
     // Function to move the map and open a popup when users select a toilet
     function selectToilet(toilet, listElement) {
@@ -309,32 +301,28 @@ document.addEventListener("DOMContentLoaded", async function () {
             t.name.toLowerCase().includes(searchTerm)
         );
 
-        var modal = document.getElementById("myModal");
+        const modal = document.getElementById("myModal");
+        const span = document.querySelector(".close");
 
-        // Get the button that opens the modal
-        var btn = document.getElementById("myBtn");
-
-        // Get the <span> element that closes the modal
-        var span = document.getElementsByClassName("close")[0];
-
-        // When the user clicks on the button, open the modal
-        btn.onclick = function () {
-            modal.style.display = "block";
-            console.log('click');
+        // open modal
+        document.addEventListener("click", function (e) {
+            if (e.target && e.target.classList.contains("open-modal-btn")) {
+                modal.style.display = "block";
+                console.log("Modal öppnad från popup!");
+            }
+        });
+        // hide modal
+        if (span) {
+            span.onclick = function () {
+                modal.style.display = "none";
+            };
         }
 
-        // When the user clicks on <span> (x), close the modal
-        span.onclick = function () {
-            modal.style.display = "none";
-        }
-
-        // When the user clicks anywhere outside of the modal, close it
         window.onclick = function (event) {
             if (event.target == modal) {
                 modal.style.display = "none";
             }
-        }
-
+        };
 
         // Updates number showing amount of toilets found
         if (countContainer) {
@@ -367,57 +355,20 @@ document.addEventListener("DOMContentLoaded", async function () {
             });
 
         sorted.forEach(toilet => {
-            const popupContent = `
-                <div class="toilet-popup">
-                    <strong class="popup-title">${toilet.name}</strong>
-                    
-                    <div class="popup-info">
-                        <span><b>Poäng:</b> ${formatAvgRating(toilet.avgRating)}</span>
-                        <span><b>Sunkighet:</b> ${formatDankness100(toilet.shittyness)}</span>
-                        <span><b>Antal toaletter:</b> ${toilet.nbrWcs}</span>
-                        <span><b>Avgift:</b> ${toilet.fee ? toilet.fee : "Gratis"}</span>
-                        <span><b>Skötbord:</b> ${toilet.change_table_child > 0 ? "Finns" : "Saknas"}</span>
-                    </div>
-                        <!-- REVIEW-DEL -->
-                    <div class="popup-reviews" data-toilet-id="${toilet.id}" data-toilet-name="${toilet.name}">
-                        <button type="button" class="popup-review-toggle">Review</button>
-                        <button id="myBtn">Open Modal</button>
-                        <form class="popup-review-form" style="display:none; margin-top:8px;">
-                            <input class="review-author" type="text" placeholder="Ditt namn" required />
-                            
-                            <div class="rating-row" style="margin-top:8px;">
-                                <div><b>Betyg:</b></div>
-                                <div class="star-picker" role="radiogroup" aria-label="Välj betyg">
-                                    <span class="star" data-value="1" role="radio" aria-checked="false">⭐️</span>
-                                    <span class="star" data-value="2" role="radio" aria-checked="false">⭐️</span>
-                                    <span class="star" data-value="3" role="radio" aria-checked="false">⭐️</span>
-                                    <span class="star" data-value="4" role="radio" aria-checked="false">⭐️</span>
-                                    <span class="star" data-value="5" role="radio" aria-checked="false">⭐️</span>
-                                </div>
-                                <input type="hidden" class="review-rating" value="0" />
-                            </div>
-
-                            <div class="poop-row" style="margin-top:8px;">
-                                <div><b>Sunkighet:</b></div>
-                                <div class="poop-picker" role="radiogroup" aria-label="Välj sunkighet">
-                                    <span class="poop" data-value="1" role="radio" aria-checked="false">💩</span>
-                                    <span class="poop" data-value="2" role="radio" aria-checked="false">💩</span>
-                                    <span class="poop" data-value="3" role="radio" aria-checked="false">💩</span>
-                                    <span class="poop" data-value="4" role="radio" aria-checked="false">💩</span>
-                                    <span class="poop" data-value="5" role="radio" aria-checked="false">💩</span>
-                                </div>
-                                <input type="hidden" class="review-poop" value="0" />
-                            </div>
-
-
-                            <textarea class="review-description" placeholder="Skriv en kommentar..." required></textarea>
-                            <button type="submit">Skicka</button>
-                            <div class="review-status" style="margin-top:6px;"></div>
-                        </form>
-                    <h3 class="review-header"> Resensioner: </h3>
+        const popupContent = `
+            <div class="toilet-popup">
+                <strong class="popup-title">${toilet.name}</strong>
+                <div class="popup-info">
+                    <span><b>Poäng:</b> ${formatAvgRating(toilet.avgRating)}</span>
+                    <span><b>Sunkighet:</b> ${formatDankness100(toilet.shittyness)}</span>
+                    <span><b>Avgift:</b> ${toilet.fee ? toilet.fee : "Gratis"}</span>
+                </div>
+                <div class="popup-reviews" data-toilet-id="${toilet.id}" data-toilet-name="${toilet.name}">
+                    <button type="button" class="open-modal-btn">Skriv recension</button>
+                    <h3 class="review-header">Recensioner:</h3>
                     <div class="popup-review-list" style="margin-top:10px;"></div>
-                    </div>
-                </div>`;
+                </div>
+            </div>`;
 
             // Custom marker on map
             const brownIcon = L.divIcon({
@@ -497,7 +448,6 @@ document.addEventListener("DOMContentLoaded", async function () {
     function setStartMarker(latlng) {
         currentLat = latlng.lat;
         currentLng = latlng.lng;
-
         userMarker ||= L.marker(latlng).addTo(map);
         userMarker.setLatLng(latlng);
     }
