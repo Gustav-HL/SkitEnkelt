@@ -1,4 +1,5 @@
 import Resources.Toilet;
+import com.google.gson.GsonBuilder;
 import io.javalin.http.Context;
 
 import java.io.*;
@@ -129,20 +130,6 @@ public class ToiletHandler {
                 .sorted(Comparator.comparingDouble(Toilet::getDistance))
                 .collect(Collectors.toList());
 
-        int numberOfShittersCloseBy = 0;
-        int numbersOfChangingTables = 0;
-        for (Toilet t : toilets) {
-            numberOfShittersCloseBy += t.getNbrWcs();
-            numbersOfChangingTables += t.getChange_table_child();
-
-            System.out.println(
-                    t.getName() + " → " + Math.round(t.getDistance()) + " meters"
-            );
-        }
-
-        System.out.println("Number of toilets in range: " + numberOfShittersCloseBy);
-        System.out.println("Number of changing tables in range: " + numbersOfChangingTables);
-
         ctx.json(toilets);
     }
 
@@ -161,7 +148,7 @@ public class ToiletHandler {
 
         reviewsCollection.getReviews().add(incoming);
 
-        Gson gson = new Gson();
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String updated = gson.toJson(reviewsCollection);
         try {
             Files.writeString(
