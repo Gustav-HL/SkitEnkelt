@@ -104,8 +104,9 @@ public class ToiletHandler {
                                 f.properties.fee,
                                 f.properties.wc,
                                 getReviewsByToiletId(f.properties.id),
-                                getRatingByToiletId(f.properties.id),
-                                f.properties.open_hours
+                                getAverageRatingByToiletId(f.properties.id),
+                                f.properties.open_hours,
+                                getShittyNess()
                         );
                     } catch (FileNotFoundException e) {
                         throw new RuntimeException(e);
@@ -144,6 +145,9 @@ public class ToiletHandler {
 
         ctx.json(toilets);
     }
+
+    private String getShittyNess(int toiletId) {
+    return String.valueOf(reviewsCollection.getAverageShittyness(toiletId));}
 
     public void addReview(Context ctx) throws FileNotFoundException {
         getToiletsAnew();
@@ -186,8 +190,6 @@ public class ToiletHandler {
                 result.add(review);
             }
         }
-
-        System.out.println(reviewsCollection.getAverageRating(toiletId));
         return result;
     }
 
@@ -207,7 +209,7 @@ public class ToiletHandler {
         ctx.json(reviews);
     }
 
-    public String getRatingByToiletId(int toiletId) throws FileNotFoundException {
+    public String getAverageRatingByToiletId(int toiletId) throws FileNotFoundException {
         return String.valueOf(reviewsCollection.getAverageRating(toiletId));
     }
 

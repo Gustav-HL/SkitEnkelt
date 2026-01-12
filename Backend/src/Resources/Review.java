@@ -10,7 +10,7 @@ public class Review {
     private String description;
     private String photo;
 
-    public Review(int id, String author, String date, int toiletId, String toalettNamn, double rating, String description, String photo){
+    public Review(int id, String author, String date, int toiletId, String toalettNamn, double rating, String description, String photo, int shittyness){
         this.id = id;
         this.author = author;
         this.date = date;
@@ -82,5 +82,9 @@ public class Review {
 
     public void setPhoto(String photo) {
         this.photo = photo;
+    }
+
+    public int getShittyness(){
+        return 0;
     }
 }

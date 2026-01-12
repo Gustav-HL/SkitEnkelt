@@ -34,4 +34,20 @@ public class Reviews {
         }
     }
 
+    public double getAverageShittyness(int toiletID){
+        double shittyness = 0;
+        int nbrOfReviews = 0;
+        for(Review r : reviews){
+            if(r.getToiletId() == toiletID){
+                nbrOfReviews ++;
+                shittyness += r.getShittyness();
+            };
+        }
+        if(nbrOfReviews == 0 ){
+            return 0;
+        } else {
+            return shittyness/nbrOfReviews;
+        }
+    }
+
 }

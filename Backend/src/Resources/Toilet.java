@@ -11,11 +11,12 @@ public class Toilet {
     private String fee;
     private int nbrWcs;
     private List<Review> reviews;
-    private double rating;
+    private double avgRating;
     private String openingHours;
     private int distance;
+    private int shittyness;
 
-    public Toilet(int id, String name, double lng, double lat, int change_table_child, String fee, int nbrWcs, List<Review> reviews, String rating, String openingHours) {
+    public Toilet(int id, String name, double lng, double lat, int change_table_child, String fee, int nbrWcs, List<Review> reviews, String rating, String openingHours, int shitness) {
         this.id = id;
         this.name = name;
         this.lng = lng;
@@ -25,7 +26,8 @@ public class Toilet {
         this.nbrWcs = nbrWcs;
         this.reviews = reviews;
         this.openingHours = openingHours;
-        this.rating = Double.parseDouble(rating);
+        this.avgRating = Double.parseDouble(rating);
+        this.shittyness = shittyness;
     }
 
     public void setId(int id) {
@@ -109,11 +111,19 @@ public class Toilet {
         this.distance = (int) Math.round(distance);
     }
 
-    public double getRating() {
-        return rating;
+    public double getAvgRating() {
+        return avgRating;
     }
 
-    public void setRating(double rating) {
-        this.rating = rating;
+    public void setAvgRating(double avgRating) {
+        this.avgRating = avgRating;
+    }
+
+    public void setShittyness(int shittyness){
+
+    }
+
+    public int getShittyness(){
+        return shittyness;
     }
 }
