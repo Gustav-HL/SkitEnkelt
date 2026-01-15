@@ -321,6 +321,36 @@
       "sunkRating": 3.0,
       "description": "Topp",
       "photo": ""
+    },
+    {
+      "id": 33,
+      "author": "Claes",
+      "toiletId": 44,
+      "toiletName": "Enskifteshagen",
+      "rating": 1.0,
+      "sunkRating": 1.0,
+      "description": "Kallt när man sitter ner.",
+      "photo": ""
+    },
+    {
+      "id": 34,
+      "author": "Claes kompis",
+      "toiletId": 44,
+      "toiletName": "Enskifteshagen",
+      "rating": 3.0,
+      "sunkRating": 1.0,
+      "description": "Kallt som fan när man sitter ner!",
+      "photo": ""
+    },
+    {
+      "id": 35,
+      "author": "Tonny",
+      "toiletId": 44,
+      "toiletName": "Enskifteshagen",
+      "rating": 5.0,
+      "sunkRating": 1.0,
+      "description": "Kallt alltså!",
+      "photo": ""
     }
   ]
 }
